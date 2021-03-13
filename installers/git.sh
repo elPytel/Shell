@@ -27,13 +27,13 @@ echo -en "${Green}Your email: ${NC} "
 read email
 echo -en "${Green}Your name: ${NC} "
 read name
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
+git config --global user.email $email
+git config --global user.name $name
 
 # vygenerovani Tokenu
 echo -e "${Red}Make your own git token instead of password!${NC}"
 echo "https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
-echo -e "${Green}Press Enter${NC}"
+echo -en "${Green}Press Enter${NC}"
 read
 
 # nastavi ukladani hesla
