@@ -1,3 +1,3 @@
 # Shell
-Všechny moje bash skripty.
+Všechny moje bashové skripty.
 
