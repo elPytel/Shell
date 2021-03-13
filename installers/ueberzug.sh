@@ -3,11 +3,8 @@
 # Skript pro instalaci:
 # Überzug is a command line util which allows to draw images on terminals by using child windows.
 
-# colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'    # No Color
+#DEBUG="true"
+DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
@@ -17,16 +14,24 @@ user=$(. $BASEDIR/get_curent_user.sh)
 #echo $user
 if [ $? != 0 ]
 then
-        echo -e "${RED}Unable to parse user!${NC}"
+        echo -e "Unable to parse user!"
         exit 2
 fi
 
+user=$(. $BASEDIR/get_curent_user.sh)
+path="/home/$user/Shell"        # cesta k skriptum
 
-echo -e "${GREEN}Installing ueberzug: ${NC}"
-pip install ueberzug
+
+# colors
+source $path/colors.sh
+
+
+echo -e "${Green}Installing ueberzug: ${NC}"
+pip3 install ueberzug
+# pip install ueberzug
 echo "Done"
 
-echo -en "${GREEN}One time path export: ${NC}"
+echo -en "${Green}One time path export: ${NC}"
 export PATH=/home/$user/.local/bin:$PATH
 echo "Done"
 
