@@ -29,6 +29,9 @@ snap install tpad
 add-apt-repository ppa:danielrichter2007/grub-customizer
 apt install grub-customizer
 
+# curl
+apt install curl
+
 # git
 ./git.sh
 
