@@ -41,6 +41,9 @@ apt install curl
 # tty-clock
 ./clock.sh
 
+# WordGrinder
+./wordgrinder.sh
+
 # LSDelux
 ./lsd.sh
 
@@ -59,8 +62,6 @@ apt install curl
 # dalsi
 apt install terminator
 apt install odt2txt	# open dokument to txt
-apt install wordgrinder # WordGrinder is a simple, Unicode-aware word processor that runs on the console.
-
 
 #apt install w3m	# WWW browsable pager with excellent tables/frames support
 #apt install feh 	# feh is an X11 image viewer aimed mostly at console users
