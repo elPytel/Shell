@@ -8,7 +8,7 @@ DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
-path="/home/$user/Shell"        # cesta k skriptum
+path="/home/$user"        # cesta k skriptum
 
 if $DEBUG; then
 	echo $user
@@ -16,10 +16,34 @@ if $DEBUG; then
 fi
 
 # colors
-source $path/colors.sh
+source $path/Shell/colors.sh
 
 # instalace gitu
-apt install git
+echo -e "${Green}Installing git: ${NC}"
+if apt install git -y; then
+        echo "Done"
+else
+        echo -e "${Red}ERROR!${NC}"
+        exit 1
+fi
+
+# nastavi aliasy
+echo -en "${Green}Setting aliases: ${NC}"
+[ ! -f $path/.bash_aliases ] && touch $path/.bash_aliases
+
+# odstrani puvodni aliasy
+sed -i '/git/d' $path/.bash_aliases
+
+# nastavi nove aliasy
+cat >> $path/.bash_aliases <<EOF
+
+# some git aliases:
+alias gt='git status'
+alias gd='git add . '
+alias gp='git push'
+alias gc='git commit -a'
+EOF
+echo "Done"
 
 # configurace
 echo -e "${Green}Git config${NC} "
