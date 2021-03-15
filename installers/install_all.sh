@@ -35,6 +35,12 @@ apt install curl
 # git
 ./git.sh
 
+# trash-cli
+./trash.sh
+
+# tty-clock
+./clock.sh
+
 # LSDelux
 ./lsd.sh
 

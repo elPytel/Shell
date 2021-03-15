@@ -8,7 +8,7 @@ DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
-path="/home/$user"        # cesta k skriptum
+path="/home/$user"	        # cesta k /home/user 
 
 if $DEBUG; then
 	echo $user
