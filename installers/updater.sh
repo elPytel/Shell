@@ -19,7 +19,7 @@ fi
 echo -e "${GREEN}Update:${NC}"
 apt-get update
 echo -e "${GREEN}Upgrade:${NC}"
-apt-get upgrade -y
+apt-get upgrade
 
 exit 0
 #END
