@@ -6,7 +6,7 @@
 DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-user=$(. $BASEDIR/get_curent_user.sh)
+user=$(. $BASEDIR/installers/get_curent_user.sh)
 path="/home/$user"              # cesta k /home/user
 
 # colors
@@ -14,7 +14,8 @@ source $path/Shell/colors.sh
 
 echo -en "${Green}Are you sure to init git repo here?${NC} Y/n: "
 read answer
-if [ $answer != "Y" ] || [ $answer != "y" ]; then
+#if [ $($path/Shell/yes_no.sh $answer) != true ] ; then
+if ! $path/Shell/yes_no.sh $answer ; then
 	exit 1
 fi
 

@@ -15,7 +15,7 @@ path="/home/$user/Shell"	# cesta k skriptum
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # colors
-source $BASEDIR/Shell/colors.sh
+source $BASEDIR/colors.sh
 #source ~/Shell/colors.sh
 
 echo -n "Which pc? [01 - $num_pc]: "
