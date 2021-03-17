@@ -53,6 +53,7 @@ echo -en "${Green}Your name: ${NC} "
 read name
 git config --global user.email $email
 git config --global user.name $name
+git config --global init.defaultBranch main	# nove inicializovane repozitare zacinaji ve vetvi main
 
 # vygenerovani Tokenu
 echo -e "${Red}Make your own git token instead of password!${NC}"
