@@ -3,8 +3,8 @@
 # Skript pro instalaci:
 # WordGrinder is a simple, Unicode-aware word pro>
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
@@ -13,12 +13,13 @@ path="/home/$user"              # cesta k /home/user
 # colors
 source $path/Shell/colors.sh
 
+app="wordgrinder"
 # instalace
-echo -e "${Green}Installing wordgrinder: ${NC}"
+echo -e "${Green}Installing ${Blue}$app: ${NC}"
 if apt install wordgrinder -y; then
         echo "Done"
 else
-        echo -e "${Red}ERROR!${NC}"
+        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
         exit 1
 fi
 

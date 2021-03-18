@@ -3,25 +3,21 @@
 # Skript pro instalaci:
 # plugin ikony pro ranger
 
-# colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'    # No Color
+#DEBUG="true"
+DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
-# $USERNAME - nefunguje na roota
 user=$(. $BASEDIR/get_curent_user.sh)
-#echo $user
 if [ $? != 0 ]
 then
-        echo -e "${RED}Unable to parse user!${NC}"
+        echo "Unable to parse user!"
         exit 2
 fi
 
-#su - $user -c ""
+# colors
+source home/$user/Shell/colors.sh
 
 plugin="ranger_devicons"
 path="/home/$user/.config/ranger/plugins"
