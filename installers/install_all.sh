@@ -32,6 +32,9 @@ apt install grub-customizer
 # curl
 apt install curl
 
+# python
+./python.sh
+
 # git
 ./git.sh
 
