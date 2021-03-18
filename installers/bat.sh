@@ -3,18 +3,18 @@
 # Skript pro instalaci:
 # bat - A cat(1) clone with wings.
 
+#DEBUG=true
+DEBUG=false
+
 # colors
 RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
 NC='\033[0m'    # No Color
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
-# $USERNAME - nefunguje na roota
 user=$(. $BASEDIR/get_curent_user.sh)
-#echo $user
+[ $DEBUG ] &&  echo $user
 if [ $? != 0 ]
 then
         echo -e "${RED}Unable to parse user!${NC}"
@@ -22,12 +22,22 @@ then
 fi
 
 path="/home/$user/"
-echo -e "${GREEN}Installing bat: ${NC}"
-apt install bat
-echo "Done"
+
+# colors
+source $path/Shell/colors.sh
+
+app="bat"
+# instalace
+echo -e "${Green}Installing ${Blue}$app: ${NC}"
+if apt install $app -y; then
+        echo "Done"
+else
+        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
+        exit 1
+fi
 
 # nastavi aliasy
-echo -en "${GREEN}Setting aliases: ${NC}"
+echo -en "${Green}Setting aliases: ${NC}"
 [ ! -f $path.bash_aliases ] && touch $path.bash_aliases
 
 # odstrani puvodni aliasy pro bat
