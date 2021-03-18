@@ -5,23 +5,23 @@
 
 # colors
 RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
 NC='\033[0m'    # No Color
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
-# $USERNAME - nefunguje na roota
 user=$(. $BASEDIR/get_curent_user.sh)
-#echo $user
+[ $DEBUG ] && echo $user
 if [ $? != 0 ]
 then
         echo -e "${RED}Unable to parse user!${NC}"
         exit 2
 fi
 
-path="/home/$user"
+path="/home/$user"               # cesta k /home/user
+
+# colors
+source $path/Shell/colors.sh
 
 verzion=0.19.0
 file=lsd_"$verzion"_amd64.deb
@@ -29,32 +29,32 @@ file=lsd_"$verzion"_amd64.deb
 # stahne dany soubor
 if [ -f $file ]	# existuje jiz dany soubor?
 then
-        echo -e "${GREEN}Already downloaded!${NC}"
+        echo -e "${Green}Already downloaded!${NC}"
 else
-        echo -e "${GREEN}Downloading: ${BLUE}LSD${NC}"
+        echo -e "${Green}Downloading: ${Blue}LSD${NC}"
 	curl -L -O https://github.com/Peltoche/lsd/releases/download/$verzion/$file
 fi
 
-echo -en "${GREEN}Install LSDeluxe: ${NC}"
+echo -en "${Green}Install LSDeluxe: ${NC}"
 if [ ! $(dpkg -i $file) ]
 then
-	echo -e "${RED}Are you root?${NC}"
+	echo -e "${Red}Are you root?${NC}"
         exit 1
 fi
 echo "Done"
 #snap install lsd --classic     # stara nefunkci verze
 
-echo -e "${GREEN}Installing fonts: ${NC}"
+echo -e "${Green}Installing fonts: ${NC}"
 ./fonts.sh
-echo -e "\r${GREEN}Installing fonts: ${NC}Done"
+echo -e "\r${Green}Installing fonts: ${NC}Done"
 
 # clear
-echo -e -n "${GREEN}Clearing downloaded files: ${NC}"
+echo -e -n "${Green}Clearing downloaded files: ${NC}"
 rm $file    # smaze stazeny balicek
 echo "Done"
 
 # nastavi aliasy
-echo -en "${GREEN}Setting aliases: ${NC}" 
+echo -en "${Green}Setting aliases: ${NC}" 
 [ ! -f $path/.bash_aliases ] && touch $path/.bash_aliases
 
 # odstrani puvodni aliasy pro lsd
