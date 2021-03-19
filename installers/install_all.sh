@@ -20,17 +20,20 @@ fi
 ./updater.sh
 
 # instalace snap
-apt install snapd
+apt install snapd -y
 
 # instalace tpadu
-snap install tpad
+snap install tpad 
 
 # grub customizer
 add-apt-repository ppa:danielrichter2007/grub-customizer
 apt install grub-customizer
 
 # curl
-apt install curl
+apt install curl -y
+
+# Vim
+apt install vim -y
 
 # python
 ./python.sh
@@ -63,8 +66,8 @@ apt install curl
 ./ranger.sh
 
 # dalsi
-apt install terminator
-apt install odt2txt	# open dokument to txt
+apt install terminator -y
+apt install odt2txt -y	# open dokument to txt
 
 #apt install w3m	# WWW browsable pager with excellent tables/frames support
 #apt install feh 	# feh is an X11 image viewer aimed mostly at console users
