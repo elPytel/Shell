@@ -11,10 +11,9 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
 user=$(. $BASEDIR/get_curent_user.sh)
-[ $DEBUG ] && echo $user
-if [ $? != 0 ]
-then
-        echo -e "${RED}Unable to parse user!${NC}"
+if [ $? != 0 ]; then
+        [ $DEBUG ] && echo $user
+	echo -e "${RED}Unable to parse user!${NC}"
         exit 2
 fi
 

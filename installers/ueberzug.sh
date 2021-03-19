@@ -11,9 +11,8 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 # find user name
 # $USERNAME - nefunguje na roota
 user=$(. $BASEDIR/get_curent_user.sh)
-#echo $user
-if [ $? != 0 ]
-then
+if [ $? != 0 ]; then
+	[ $DEBUG ] && echo $user
         echo -e "Unable to parse user!"
         exit 2
 fi
