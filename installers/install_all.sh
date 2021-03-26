@@ -17,7 +17,7 @@ then
 fi
 
 # aktualizace
-./updater.sh
+./updater.sh -y
 
 # instalace snap
 apt install snapd -y
