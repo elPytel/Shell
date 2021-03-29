@@ -59,7 +59,7 @@ case $arg in
 	;;
 	*)
                 # Default condition
-                echo -e "${RED}Unknown parametr: $arg${NC}"
+                echo -e "${Red}Unknown parametr: $arg${NC}"
                 exit 2
         ;;
 esac

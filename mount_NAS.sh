@@ -5,7 +5,8 @@
 #DEBUG=true
 DEBUG=false
 
-BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
+user=$(. $BASEDIR/installers/get_curent_user.sh)
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
@@ -25,7 +26,7 @@ else
 fi
 
 
-config=".config"
+config=".mount.conf"
 line=$(cat -n $config | grep "SMB" | cut -f1 | tr -d " ")
 NUM=$(( line + 1 ))
 name=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
@@ -37,9 +38,11 @@ if $DEBUG; then
 	echo "Path: $path"
 fi
 
+#"/media/$user/$name"
+
 case $arg in
-        "-m" | "--mount")
-                # pripoji sitovy disk
+	"-m" | "--mount")
+		# pripoji sitovy disk
                 echo -e "${Green}Mounting: ${Blue}$name${NC}"
                 gio mount "$path"
         ;;
@@ -54,7 +57,7 @@ case $arg in
         ;;
         *)
                 # Default condition
-                echo -e "${RED}Unknown parametr: $arg${NC}"
+                echo -e "${Red}Unknown parametr: $arg${NC}"
                 exit 2
         ;;
 esac
