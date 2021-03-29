@@ -66,13 +66,6 @@ userid=$(id -u $user)
 mountpoint="/media/$user/$name"
 tmplocation="/run/user/$userid/gvfs/smb-share:server=$servername,share=$sharename"
 
-if $DEBUG; then
-        echo "Server: $servername"
-        echo "Share: $sharename"
-	echo "Mount point: $mountpoint"
-	echo "tmp location: $tmplocation"
-fi
-
 case $arg in
 	"-m" | "--mount")
 		# pripoji sitovy disk
@@ -106,7 +99,7 @@ case $arg in
                 # Default condition
                 echo -e "${Red}Unknown parametr: $arg${NC}"
                 exit 2
-        ;;
+        ;
 esac
 
 echo "Done"

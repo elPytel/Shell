@@ -7,4 +7,4 @@ Předpokládaná cesta k tomuto repozitáři je v home. Tedy: /home/user/Shell/.
 
 ### TODO
 
-* předělat na debug na DEBUG=$true
+ - [ ] předělat na debug na DEBUG=$true
