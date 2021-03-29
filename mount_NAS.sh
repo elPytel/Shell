@@ -2,8 +2,8 @@
 # By Pytel
 # Skript pro praci s gio na pripojovani sitovych disku
 
-DEBUG=true
-#DEBUG=false
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
 user=$(. $BASEDIR/installers/get_curent_user.sh)
@@ -52,7 +52,19 @@ case $arg in
                 echo -e "${Green}Mounting: ${Blue}$servername${NC}"
                 gio mount "smb://$servername/$sharename"
 		# mount point
-		sudo ln -s $tmplocation $mountpoint
+		echo -en "${Green}Link check: ${NC}"
+		./linkCheck.sh $mountpoint	
+		ec=$?
+		case $ec in
+			0) echo "Link to tmp dir established.";;
+			1) echo "${Red}ERROR:${NC} Invalid mount point!";;
+			2) echo "${Red}ERROR:${NC} Failed to connect with tmp dir!";;
+			3) echo "${Red}ERROR:${NC} Dir already exists and it is not a link!";;
+			4) 
+				echo  "Creating new link."
+				sudo ln -s $tmplocation $mountpoint
+			;;
+		esac
         ;;
         "-u" | "--unmount")
                 # odpoji se od sitoveho disku
@@ -70,6 +82,6 @@ case $arg in
         ;;
 esac
 
-
+echo "Done"
 exit
 #END
