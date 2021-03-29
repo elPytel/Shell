@@ -2,8 +2,8 @@
 # By Pytel
 # Skript pro praci s gio na pripojovani sitovych disku
 
-#DEBUG=true
-DEBUG=false
+DEBUG=true
+#DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
 user=$(. $BASEDIR/installers/get_curent_user.sh)
@@ -29,27 +29,35 @@ fi
 config=".mount.conf"
 line=$(cat -n $config | grep "SMB" | cut -f1 | tr -d " ")
 NUM=$(( line + 1 ))
-name=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
+servername=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
 NUM=$(( line + 2 ))
-path=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
+sharename=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
+
+userid=$(id -u $user)
+mountpoint="/media/$user/$servername"
+tmplocation="/run/user/$userid/gvfs/smb-share:server=$servername,share=$sharename"
+
+# ~/<mountpoint>
 
 if $DEBUG; then
-	echo "Name: $name"
-	echo "Path: $path"
+        echo "Server: $servername"
+        echo "Share: $sharename"
+	echo "Mount point: $mountpoint"
+	echo "tmp location: $tmplocation"
 fi
-
-#"/media/$user/$name"
 
 case $arg in
 	"-m" | "--mount")
 		# pripoji sitovy disk
-                echo -e "${Green}Mounting: ${Blue}$name${NC}"
-                gio mount "$path"
+                echo -e "${Green}Mounting: ${Blue}$servername${NC}"
+                gio mount "smb://$servername/$sharename"
+		# mount point
+		sudo ln -s $tmplocation $mountpoint
         ;;
         "-u" | "--unmount")
                 # odpoji se od sitoveho disku
-		echo -e "${Green}Unmounting: ${Blue}$name${NC}"
-                gio mount -u "$path"
+		echo -e "${Green}Unmounting: ${Blue}$servername${NC}"
+                gio mount -u "smb://$servername/$sharename"
         ;;
         "-l" | "--list")
                 # vypise pripojene disky
