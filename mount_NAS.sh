@@ -2,11 +2,12 @@
 # By Pytel
 # Skript pro praci s gio na pripojovani sitovych disku
 
-#DEBUG=true
-DEBUG=false
+DEBUG=true
+#DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
 user=$(. $BASEDIR/installers/get_curent_user.sh)
+path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
@@ -25,19 +26,45 @@ else
         exit 1
 fi
 
-
 config=".mount.conf"
-line=$(cat -n $config | grep "SMB" | cut -f1 | tr -d " ")
+DRIVES=$(cat -n $path/$config | grep "drives" | cut -d"=" -f2)
+$DEBUG && echo "drives: $DRIVES"
+len=$(wc -l $path/$config | cut -d" " -f1)	# conf file len
+for DRIVE in $DRIVES
+do
+	echo -e "${Green}Drive: ${Blue}$DRIVE${NC}"
+	# najiti intervalu
+	start_line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "#" | grep $DRIVE | cut -f1 | tr -d " ")
+	stop_line=$(cat -n $path/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+	
+	# parse
+	name=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "name" | cut -d"=" -f2)
+	servername=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "servername" | cut -d"=" -f2)
+	sharename=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "sharename" | cut -d"=" -f2)
+	
+	if $DEBUG; then
+        	echo "Config lines:"
+		echo " > from: $start_line"
+        	echo " > to: $stop_line"
+		echo "Server: $servername"
+        	echo "Share: $sharename"
+        	echo "Mount point: $mountpoint"
+        	echo "tmp location: $tmplocation"
+	fi
+done
+exit
+
+line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "SMB" | cut -f1 | tr -d " ")
 NUM=$(( line + 1 ))
-servername=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
+name=$(sed "${NUM}q;d" $path/$config | cut -d"=" -f2)
 NUM=$(( line + 2 ))
-sharename=$(sed "${NUM}q;d" $config | cut -d"=" -f2)
+servername=$(sed "${NUM}q;d" $path/$config | cut -d"=" -f2)
+NUM=$(( line + 3 ))
+sharename=$(sed "${NUM}q;d" $path/$config | cut -d"=" -f2)
 
 userid=$(id -u $user)
-mountpoint="/media/$user/$servername"
+mountpoint="/media/$user/$name"
 tmplocation="/run/user/$userid/gvfs/smb-share:server=$servername,share=$sharename"
-
-# ~/<mountpoint>
 
 if $DEBUG; then
         echo "Server: $servername"
@@ -53,7 +80,7 @@ case $arg in
                 gio mount "smb://$servername/$sharename"
 		# mount point
 		echo -en "${Green}Link check: ${NC}"
-		./linkCheck.sh $mountpoint	
+		$path/linkCheck.sh $mountpoint	
 		ec=$?
 		case $ec in
 			0) echo "Link to tmp dir established.";;
