@@ -5,8 +5,24 @@ Rozhodl jsem se že napíši stručný úvod do skriptovacího jazyka Bash. Plá
 ## Forma
 Většina internetových zdrojů co se týče jazyka podání je výhradně anglicky, je to asi lepší než aby to bylo čínsky, ale já jsem se rozhodl ty to poznámky psát výhradně česky.
 
-# Proměné
+## Proměné
 Bash si na typy proměných moc nepotrpí. Představte si že ke všemu vnitřně přistupuje jako kdyby to byl string, tedy řetězec (pole) znaků a je mu jedno, zda jste zrovna měli na mysli číslo (int, nedej bože double), pole, nebo textový soubor.
 ```
 Kód.
 ```
+
+## Podmínky
+```Bash
+if <podmínky>; then
+	<příkazy pro splněný if>
+elif <jiná podmínka>; then
+	<příkazy pro splněný elif>
+else
+	<příkaz který se vykoná vždy když není splněna žádná z předchozích podmínek>
+fi
+```
+
+
+
+
+## Smyčky
