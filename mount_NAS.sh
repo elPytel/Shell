@@ -13,25 +13,38 @@ $DEBUG && echo "path: $BASEDIR"
 # colors
 source $BASEDIR/colors.sh
 
-# zadal validni argumenty?
-if [ $# -eq 0 ]
-then
-	echo -e "${Green}Valid arguments: ${NC} -m --mount | -u --unmount | -l --list"
-        exit 2
-elif [ $# -eq 1 ]
-then
-        arg=$1
-else
-        echo -e "${Red}Invalid options: $@${NC}"
-        exit 1
-fi
-
 config=".mount.conf"
 DRIVES=$(cat -n $path/$config | grep "drives" | cut -d"=" -f2)
-$DEBUG && echo "drives: $DRIVES"
-len=$(wc -l $path/$config | cut -d" " -f1)	# conf file len
+len=$(wc -l $path/$config | cut -d" " -f1)      # conf file len
 userid=$(id -u $user)
 
+# zadal validni argumenty?
+case $# in
+	0) 
+		#echo -e "${Green}Valid arguments: ${NC} -m --mount | -u --unmount | -l --list | -c --connections"
+        	echo -e "USE:"
+		echo -e "  $(echo $0 | tr "/" "\n" | tail -n 1) COMMAND [none=all | conf_name]"
+		echo ""
+		echo -e "COMMANDS:"
+		echo -e "  -m --mount  \t\t to mount selected network drive"
+		echo -e "  -u --unmount\t\t to unmount selected network drive"
+		echo -e "  -l --list   \t\t list of mounted drves"
+		echo -e "  -c --connections\t print all configurated connections"
+		exit 2
+		;;
+	1) arg=$1;;
+	2)#TODO
+		if [ $(echo $DRIVES | grep $2 | wc -l) -eq 1 ]; then
+			arg=$1
+			DRIVE=$2
+		fi
+		;;
+	*) echo -e "${Red}Invalid options: $@${NC}"; exit 1;;
+esac
+
+$DEBUG && echo "drives: $DRIVES"
+
+# zpracovani
 case $arg in
 	"-m" | "--mount" | "-u" | "--unmount")
 		for DRIVE in $DRIVES; do
@@ -72,6 +85,7 @@ case $arg in
 						*) 
 							echo -e "${Red}ERROR:${NC} Ups something Faigled!" 
 							echo -e "\tUnimplemented service: ${Blue}$service${NC}"
+							;;
 					esac
 					# mount point
 					echo -en "${Green}Link check: ${NC}"
@@ -94,12 +108,15 @@ case $arg in
                 			case $service in
 						"google-drive") gio mount -u "$service://$sharename@$servername";;
 						"smb-share") gio mount -u "smb://$servername/$sharename";;
-        				
 					esac
 					;;
 			esac
 		done
                 ;;
+	"-c" | "--connections")
+		# vypise konfiurovana spojeni
+		echo $(cat -n $path/$config | grep "drives" | cut -d"=" -f2)
+		;;
         "-l" | "--list")
                 # vypise pripojene disky
                 gio mount -l | grep "^[^ ]" | grep "Mount"
