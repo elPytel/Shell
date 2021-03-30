@@ -52,7 +52,7 @@ do
         	echo "tmp location: $tmplocation"
 	fi
 done
-exit
+#exit
 
 line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "SMB" | cut -f1 | tr -d " ")
 NUM=$(( line + 1 ))
@@ -88,7 +88,7 @@ case $arg in
         ;;
         "-u" | "--unmount")
                 # odpoji se od sitoveho disku
-		echo -e "${Green}Unmounting: ${Blue}$servername${NC}"
+		echo -e "${Green}Unmounting: ${Blue}$name${NC}"
                 gio mount -u "smb://$servername/$sharename"
         ;;
         "-l" | "--list")
@@ -99,7 +99,7 @@ case $arg in
                 # Default condition
                 echo -e "${Red}Unknown parametr: $arg${NC}"
                 exit 2
-        ;
+	;;
 esac
 
 echo "Done"
