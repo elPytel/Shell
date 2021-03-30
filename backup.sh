@@ -2,17 +2,19 @@
 # By Pytel
 # Skript pro praci zalohovani dat mezi disky pomoci rsync
 # parametry programu rsync:
-# -a 		archivuj (vse kopiruje identicky)
+# -a 		archivuj (vse kopiruje identicky, -rlptgoD)
 # -r 		rekurzivne (pro slozky)
-# -n --dry-run	beh na zkouska (testovani)
+# -n, --dry-run	beh na zkouska (testovani)
 # -v verbose
-# -z --compress	komprimace pro komunikaci po siti
-# -p --progress
+# -z, --compress	komprimace pro komunikaci po siti
+# -p, --perms	zachovej opravneni
+# -P, --progress
 # -h		humanreadeble
+# -u, --update
 # --delete	odstrani neexistujici soubory z ciloveho adresare
 
-DEBUG=true
-#DEBUG=false
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
 user=$(. $BASEDIR/installers/get_curent_user.sh)
@@ -33,13 +35,25 @@ for BACKUP in $BACKUPS
 do
 	echo -e "${Green}Backup: ${Blue}$BACKUP${NC}"
 	# najiti intervalu
-        start_line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "#" | grep $BACKUP | cut -f1 | tr -d " ")
-        stop_line=$(cat -n $path/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+        start_line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "# $BACKUP" | cut -f1 | tr -d " ")
+	stop_line=$(cat -n $path/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
 
         # parse
 	options=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "option" | cut -d"=" -f2)
-	source_dir=$(sed -n "${start_line},${stop_line}p" $path/$config |     grep "source" | cut -d"=" -f2)
-	destination=$(sed -n "${start_line},${stop_line}p" $path/$config |     grep "destination" | cut -d"=" -f2)
+	source_dir=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "source" | cut -d"=" -f2 | cut -f1)
+	s_removable=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "source" | cut -d"=" -f2 | cut -f2)
+	case $s_removable in
+		"true") source_dir="$mount/$source_dir";;
+		"false" | *) s_removable=false;;
+	esac
+
+	destination=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "destination" | cut -d"=" -f2 | cut -f1)
+	d_removable=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "destination" | cut -d"=" -f2 | cut -f2)
+	case $d_removable in
+		"true")
+			destination="$mount/$destination";;
+		"false" | *) d_removable=false;;
+	esac
 
 	if $DEBUG; then
                 echo "Config lines:"
@@ -47,31 +61,32 @@ do
                 echo " > to:		$stop_line"
 		echo "options:	$options"
 		echo "source:		$source_dir"
+		echo " > removable:	$s_removable"
 		echo "destination:	$destination"
+		echo " > removable:	$d_removable"
 	fi
-	
+
 	# test validity adresaru
 	valid=true
-	if [ ! -d $mount/$source_dir ]; then
+	if [ ! -d $source_dir ]; then
 		echo -e "${Red}ERROR:${NC} in source dir!"
 		valid=false
 		ret=2	
 	fi
-	if [ ! -d $mount/$destination ]; then
+	if [ ! -d $destination ]; then
 		echo -e "${Red}ERROR:${NC} destination dir do not exist!"
- 		echo -e "\t${Green}try:${NC} mkdir -p $mount/$destination"
+ 		echo -e "\t${Green}try:${NC} mkdir -p $destination"
 		valid=false
 		ret=3
 	fi
 	
 	# syncing
 	if [ $valid == "true" ]; then
-		rsync $options "$mount/$source_dir/" "$mount/$destination/"
+		rsync $options $source_dir $destination
 		ec=$?
 	fi
 	$DEBUG && echo "valid: $valid ret: $ec"
 	if [[ $valid != "true" || $ec -ne 0 ]]; then
-	#if [[ ! $valid || ! $ec ]]; then
 		echo -e "${Red}ERROR:${NC} unable to run sync!"
 		ret=1
 	else
