@@ -2,10 +2,10 @@
 # By Pytel
 # Skript pro praci s gio na pripojovani sitovych disku
 
-DEBUG=true
-#DEBUG=false
+#DEBUG=true
+DEBUG=false
 
-BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
+BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/installers/get_curent_user.sh)
 path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
@@ -33,10 +33,10 @@ case $# in
 		exit 2
 		;;
 	1) arg=$1;;
-	2)#TODO
-		if [ $(echo $DRIVES | grep $2 | wc -l) -eq 1 ]; then
+	2)
+		if [ $(echo "$DRIVES" | tr " " "\n" | grep "$2" | wc -l    ) -eq 1 ]; then
 			arg=$1
-			DRIVE=$2
+			DRIVES=$2
 		fi
 		;;
 	*) echo -e "${Red}Invalid options: $@${NC}"; exit 1;;
@@ -112,10 +112,11 @@ case $arg in
 					;;
 			esac
 		done
-                ;;
+		echo "Done"
+		;;
 	"-c" | "--connections")
-		# vypise konfiurovana spojeni
-		echo $(cat -n $path/$config | grep "drives" | cut -d"=" -f2)
+		# vypise konfigurovana spojeni
+		echo $(cat $path/$config | grep "drives" | cut -d"=" -f2)
 		;;
         "-l" | "--list")
                 # vypise pripojene disky
@@ -128,6 +129,5 @@ case $arg in
 		;;
 esac
 
-echo "Done"
-exit
+exit 0
 #END
