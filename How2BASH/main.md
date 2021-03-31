@@ -50,3 +50,7 @@ do
 	<příkazy>
 done
 ```
+
+## Formátový výstup
+printf "%.25s...\n" "dataURI: DFASDFKAJELKJDFSADFMLAKFJLSKDJFAJSDFL"
+echo "${yourvar:0:25}..."
