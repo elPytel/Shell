@@ -30,6 +30,6 @@ user=<uzivatelske jmeno>
 
 # END
 ```
-* <nazev> specifikuje symbolicky link, který se vytvoří do */media/user/*
+- <nazev> specifikuje symbolicky link, který se vytvoří do */media/user/*
 
 Pokud odkaz na tento script přidáte mezi **Aplikace spuštěné po přihlášení** (*/home/user/Shell/mount_NAS.sh -m*), tak se vám vždy po spuštění počítače automaticky připoji všechny dostupné disky ze záznamu.
