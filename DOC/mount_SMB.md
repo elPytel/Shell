@@ -1,4 +1,4 @@
-# mont_SMB.sh
+# mount_SMB.sh
 Script pro automatické mountování síťových disků podle konfiguračního scriptu.
 
 Help pro tento script `./mount_NAS.sh`.
@@ -13,7 +13,8 @@ COMMANDS:
   -c --connections	 print all configurated connections
 ```
 
-Template pro konfikurační soubor. Pojmenujte jej `.mount.conf` a umístěte do stejného adresáře jako hlavní script (ideálně */home/user/Shell*).
+## Template pro konfikurační soubor 
+Pojmenujte jej `.mount.conf` a umístěte do stejného adresáře jako hlavní script (ideálně: */home/user/Shell/*).
 ```BASH
 drives=<vycet hlavicek odeleny mezerami>
 # <hlavicka zaznamu> 
@@ -30,6 +31,6 @@ user=<uzivatelske jmeno>
 
 # END
 ```
-- <nazev> specifikuje symbolicky link, který se vytvoří do */media/user/*
+- `<nazev>` specifikuje symbolicky link, který se vytvoří do: */media/user/*
 
 Pokud odkaz na tento script přidáte mezi **Aplikace spuštěné po přihlášení** (*/home/user/Shell/mount_NAS.sh -m*), tak se vám vždy po spuštění počítače automaticky připoji všechny dostupné disky ze záznamu.
