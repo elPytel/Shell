@@ -11,7 +11,7 @@ path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
-source $BASEDIR/colors.sh
+source $BASEDIR/tools/colors.sh
 
 config=".mount.conf"
 DRIVES=$(cat -n $path/$config | grep "drives" | cut -d"=" -f2)

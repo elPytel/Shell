@@ -2,15 +2,20 @@
 # By Pytel
 # Skript pro automatickou aktualizaci
 
+#DEBUG=true
+DEBUG=false
+
+BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+user=$(. $BASEDIR/installers/get_curent_user.sh)
+path="/home/$user/Shell"        # cesta k skriptum
+$DEBUG && echo "path: $BASEDIR"
+
 # colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'    # No Color
+source $BASEDIR/tools/colors.sh
 
 if [ $(whoami) != "root" ]	# kdyz neni root
 then
-        echo -e "${RED}I nead root privileges!${NC}"
+        echo -e "${Red}I nead root privileges!${NC}"
         sudo $0 $1        # znovu zpusti sam sebe ale s pravy roota
         exit 1
 fi
@@ -23,10 +28,10 @@ then
 fi
 
 # aktualizace
-echo -e "${GREEN}Update:${NC}"
+echo -e "${Green}Update:${NC}"
 apt-get update
-echo -e "${GREEN}Upgrade:${NC}"
-apt-get upgrade $1
+echo -e "${Green}Upgrade:${NC}"
+apt-get upgrade $arg
 
 exit 0
 #END

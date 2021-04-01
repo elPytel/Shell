@@ -14,7 +14,7 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
-source $BASEDIR/colors.sh
+source $BASEDIR/tools/colors.sh
 
 # top -bn 1 | grep vpnagentd
 

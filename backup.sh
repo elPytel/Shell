@@ -22,7 +22,7 @@ path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
-source $BASEDIR/colors.sh
+source $BASEDIR/tools/colors.sh
 
 config=".backup.conf"
 BACKUPS=$(cat -n $path/$config | grep "backups" | cut -d"=" -f2)

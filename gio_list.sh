@@ -11,7 +11,7 @@ path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
-source $BASEDIR/colors.sh
+source $BASEDIR/tools/colors.sh
 
 #gio list -a "standard::display-name"
 #gio list -a "standard::display-name" | cut -f3,4 | tr -s ":" | tr -s [:space:] | tr "\t" ":"
