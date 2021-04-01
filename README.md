@@ -1,9 +1,19 @@
 # Shell
 Všechny moje bashové skripty.
 
-Složka installers obsahuje skripty s automatickou instalací aplikací a jejich konfigurací.
+Předpokládaná cesta k tomuto repozitáři je v home, tedy: */home/user/Shell/...*
 
-Předpokládaná cesta k tomuto repozitáři je v home. Tedy: /home/user/Shell/...
+## Úvod v BASHi
+* [tady](/HOW2BASH/main.md)
+
+## Dokumetace
+* [tady](/DOC/main.md)
+
+
+## instalers
+
+Složka installers obsahuje skripty s automatickou instalací aplikací a jejich následnou konfigurací.
+
 
 ### TODO
 

@@ -94,6 +94,6 @@ do
 	fi
 done
 
-echo "Done"
+echo -e "Done, run time: ${Blue}$($path/tools/sec2time.sh $SECONDS)${NC}"
 exit $ret
 #END

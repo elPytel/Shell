@@ -2,19 +2,20 @@
 Soubory:
 * backup.sh
 * .backup.conf
+
 Závislosti:
 * colors.sh
 
 Skript slouží pro zálohování, respektive synchronizaci souborů mezi disky.
-```BASH
-backups=<vycet odeleny mezrerami>
-# <prarametr>=<volba>   <je v mountu?>
-# <hlavicka zaznamu>
-options=<parametry pro rsync>
-source=<absolutni cesta>        false
-destination=<releativni cesta z /media/user/>   true
-#END
-```
+> ```BASH
+> backups=<vycet odeleny mezrerami>
+> # <prarametr>=<volba>   <je v mountu?>
+> # <hlavicka zaznamu>
+> options=<parametry pro rsync>
+> source=<absolutni cesta>        false
+> destination=<releativni cesta z /media/user/>   true
+> #END
+> ```
 Skript podporuje zálohování více záznamů. Stačí ve stejném formátu přidal další blok. První řádek souboru obsahuje za `backups=` výčet NÁZVŮ oddělený mezerami všech bloků konfigurace. každý blok začíná `# <NAZEV>` a končí `#`.
 
 Nekteré možné parametry pro rsync:

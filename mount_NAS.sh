@@ -112,7 +112,7 @@ case $arg in
 					;;
 			esac
 		done
-		echo "Done"
+		echo -e "Done, run time: ${Blue}$($path/tools/sec2time.sh $SECONDS)${NC}"
 		;;
 	"-c" | "--connections")
 		# vypise konfigurovana spojeni
