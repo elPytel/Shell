@@ -33,7 +33,7 @@ sed -i '/tty-clock/d' $path/.bash_aliases
 cat >> $path/.bash_aliases <<EOF
 
 # some tty-clock aliases:
-alias clock='tty-clock -tc'
+alias clock='tty-clock -tbc'
 EOF
 echo "Done"
 
