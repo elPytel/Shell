@@ -56,30 +56,36 @@ done
 - =, ==	vraci true, pokud se stringy schodují.
 	- =	používejte s [
 	- ==	používejte s [[
-- >, < porovnání dle abecedního pořadí.
+- ">", < porovnání dle abecedního pořadí.
 - -z string	True, pokud je délka stringu nulová.
 - -n string	True, pokud je délka stringu nenulová.
 
 Příklad použití:
+
 `[[ "string1" == "string2" ]] && echo "Equal" || echo "Not equal"`
 
 ### Čísla
 
 -eq
+
 -gt
 
 ## Formátový výstup
+```
 printf "%.25s...\n" "dataURI: DFASDFKAJELKJDFSADFMLAKFJLSKDJFAJSDFL"
 echo "${yourvar:0:25}..."
-
+```
 ## Výchozí textový editor
-$ select-editor
+`$ select-editor`
 
 ## Cron
 Rootův cron:
-$ sudo crontab -e
+
+`$ sudo crontab -e`
+
 Uživatelův cron:
-$ crontab -e
+
+`$ crontab -e`
 
 # run script after reboot
-@reboot yourScriptPath 
+`@reboot yourScriptPath`

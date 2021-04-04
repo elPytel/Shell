@@ -4,7 +4,7 @@ Všechny moje bashové skripty.
 Předpokládaná cesta k tomuto repozitáři je v home, tedy: */home/user/Shell/...*
 
 ## Úvod v BASHi
-* [tady](/HOW2BASH/main.md)
+* [tady](/How2BASH/main.md)
 
 ## Dokumetace
 * [tady](/DOC/main.md)
