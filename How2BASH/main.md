@@ -70,16 +70,25 @@ Příklad použití:
 
 -gt
 
-## Formátový výstup
-```
+## Výstup
+`echo "<string>"`
+Za zmínku stojí přepínače: 
+ - `-n`, nevloží na konec řádku zalomení
+ - `-e`, povolí interpretaci escape sekvencí (\n, \t, barev...)
+
+### Formátovaný výstup
+```BASH
 printf "%.25s...\n" "dataURI: DFASDFKAJELKJDFSADFMLAKFJLSKDJFAJSDFL"
 echo "${yourvar:0:25}..."
 ```
 ## Výchozí textový editor
-`$ select-editor`
+Umožnuje vybrat defoultní textový editor v systému (Vi, Vim, Nano,...), spouští příkaz: `$ select-editor`.
 
 ## Cron
-Rootův cron:
+Cron je terminálová aplikace umožnující časování jednotlivých scriptů, co kdy a jak se má provést. Umožnuje výběr přesné minuty, hodiny, dny v měsíci, měsíce v roce, případně i dne v týdnu a příkazuči sekvence příkazů, které se v ten okamžik mají provést.
+Intuitivná záhlaví pro Cron [zde](https://gist.github.com/elPytel/6211e39e9e54a8acdc71f8bf2eda8f89#file-crontab-e-header).
+
+Rootův cron má tu výhodu, že se implicitně spuští s rootovským oprávněním:
 
 `$ sudo crontab -e`
 
@@ -87,5 +96,8 @@ Uživatelův cron:
 
 `$ crontab -e`
 
+Spuštění příkazu ihned po spuštění systému:
+```BASH
 # run script after reboot
 `@reboot yourScriptPath`
+```
