@@ -3,7 +3,7 @@
 
 Tmux je terminálový multiplexer. Umožnuje vytvoření množství terminálů v jednom okně. Od tmuxu je možné se odpojit a připojit se pozdějí.
 
-## Základní tmux příkazy:
+## Základní příkazy programu tmux:
 
 tmux (zapne aplikaci tmux)
 
@@ -12,7 +12,6 @@ tmux new -s session-name (vytvoří nové sezení a pojmenuje jej)
 tmux a (znovu otevře poslední sezení)
 
 tmux attach -t session-name (znovu otevře specifické sezení)
-
 
 - ctrl+b c (vytvoří nové okno)
 - ctrl+b d (odpojí se od sezení)

@@ -11,56 +11,106 @@ USERNAME="jaroslav.korner@tul.cz"
 
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+user=$(. $BASEDIR/installers/get_curent_user.sh)
+path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
 # colors
 source $BASEDIR/tools/colors.sh
 
-# top -bn 1 | grep vpnagentd
+config=".vpn.conf"
+PROFILES=$(cat -n $path/$config | grep "vpns" | cut -d"=" -f2)
+len=$(wc -l $path/$config | cut -d" " -f1)      # conf file len
 
-# zadal validni argumenty?
-if [ $# -eq 0 ]
-then
-	echo -e "${Green}Valid arguments: ${NC} connect | disconnect | state"
-	exit 2
-elif [ $# -eq 1 ]
-then
-	arg=$1
-else
-	echo -e "${Red}Invalid options: $@${NC}"
-	exit 1
-fi
+# top -bn 1 | grep vpnagentd
 
 # mam nainstalovany vpn klient?
 if [ ! -e $vpn_tool ]
 then
-	echo -e "${Red}ERROR: cisco anyconnect not found!${NC}"
-	exit 1
+        echo -e "${Red}ERROR: cisco anyconnect not found!${NC}"
+        exit 1
 fi
 
+# zadal validni argumenty?
+case $# in
+	0) # help
+		#echo -e "${Green}Valid arguments: ${NC} connect | disconnect | state"
+	        echo -e "USE:"
+		echo -e "  $(echo $0 | tr "/" "\n" | tail -n 1) COMMAND CONNECTION"
+		echo ""
+		echo -e "COMMANDS:"
+		echo -e "  -c --connect \t\t to connect to selected vpn"
+		echo -e "  -d --disconnect \t to disconnect from vpn"
+		echo -e "  -s --state \t\t state of vpn connection"
+		exit 2
+		;;
+	1) arg=$1;;
+	2) # zadan vyber profilu
+		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l    ) -eq 1 ]; then
+			arg=$1
+			PROFILES=$2
+                fi
+                ;;
+	*) 
+		echo -e "${Red}Invalid options:${NC} $@"
+	        exit 1
+		;;
+esac
+
+$DEBUG && echo "vpns: $PROFILES"
+
 case $arg in
-	"connect")
+	"-c" | "--connect")
 		# pripoji se pres vpn 
-		echo -e "${Green}Connecting to: ${Blue}$HOST${NC}"
-	 	echo -e "${Green}As user: ${Blue}$USERNAME${NC}"
-		echo -en "${Green}Type your password: ${NC}"	
-		read -s PASSWORD
-		#line="$USERNAME\n$PASSWORD\ny"
-		line=$PROFILE'\n\n'$PASSWORD
-		printf "$line" | $vpn_tool -s connect $HOST
+		case $(echo $PROFILES | wc -w) in
+			1) # profil je jiz zvolen
+				# najiti intervalu
+                        	start_line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "#" | grep $PROFILES | cut -f1 | tr -d " ")
+                        	stop_line=$(cat -n $path/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+
+				# parse
+				profile=$PROFILES
+				host=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "host" | cut -d"=" -f2)
+				username=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "user" | cut -d"=" -f2)
+				echo -e "${Green}Connecting to: ${Blue}$host${NC}"
+                		echo -e "${Green}As user: ${Blue}$user${NC}"
+				
+				if [ $(sed -n "${start_line},${stop_line}p" $path/$config | grep "passwd" | wc -l) -eq 1 ]; then
+					password=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "passwd" | cut -d"=" -f2)
+				else
+					echo -en "${Green}Type your password: ${NC}"    
+                			read -s password
+				fi
+				;;
+			*) # profil zatím není zvolen
+				echo -e "${Red}ERROR:${NC} not implemented yet!"
+				echo "Chose one number from: "
+				number=1
+				for $PROFILE in $PROFILES
+					echo "  $number) $PROFILE"
+					number=$(( $number + 1 ))
+				read choice
+				# TODO 
+				profile=$(echo $PROFILES | tr " " "\n")
+				# rekurzivni spusteni
+				bash $0 -c $profile
+				;;
+		esac 
+		
+		line=$profile'\n\n'$password
+		printf "$line" | $vpn_tool -s connect $host
 	;;
-	"disconnect")
+	"-d" | "--disconnect")
 		# odpoji se od vpn
 		$vpn_tool disconnect | grep "state" | uniq
 	;;
-	"state")
+	"-s" | "--state")
 		# zjisti stav pripojeni
 		$vpn_tool -s state | grep "state" | uniq | tr -d ">"
 	;;
-	*)
-                # Default condition
-                echo -e "${Red}Unknown parametr: $arg${NC}"
-                exit 2
+	*) # Default condition
+		echo -e "${Red}Unknown parametr: $arg${NC}"
+		exit 2
         ;;
 esac
 

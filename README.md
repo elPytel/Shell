@@ -7,7 +7,7 @@ Předpokládaná cesta k tomuto repozitáři je v home, tedy: */home/user/Shell/
 * [tady](/How2BASH/main.md)
 
 ## Úvod v Linuxu a jeho aplikacích
-* [tady](/how2Linux/main.md)
+* [tady](/How2Linux/main.md)
 
 ## Dokumetace
 * [tady](/DOC/main.md)

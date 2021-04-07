@@ -10,7 +10,7 @@ name="jaroslav.korner"	# jmeno uzivatele
 room="a03"		# adresa ucebny
 school=".nti.tul.cz"	# adresa skoly
 
-user="pytel"
+user=$(. $BASEDIR/installers/get_curent_user.sh)
 path="/home/$user/Shell"	# cesta k skriptum
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
@@ -35,14 +35,14 @@ then
 fi
 
 # bezi vpn?
-state=$(bash $path/log_me_to_TUL_vpn.sh state | tr -s " " | cut -d " " -f3)
+state=$(bash $path/log_me_to_TUL_vpn.sh --state | tr -s " " | cut -d " " -f3)
 $DEBUG && echo $state
 if [ $state == "Connected" ] 
 then
 	echo -e "${Green}VPN connected.${NC}"
 elif [ $state == "Disconnected" ]
 then	
-	bash $path/log_me_to_TUL_vpn.sh connect
+	bash $path/log_me_to_TUL_vpn.sh --connect TUL
 fi
 
 # ssh do skoly
