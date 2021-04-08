@@ -3,7 +3,7 @@
 Pro věští scripty/aplikace:
 * ### [backup](backup.md) 
 * ### [mount_SMB](mount_SMB.md)
-
+* ### [log_me_to_vpn](log_me_to_vpn.md)
 
 ## Instalačky
 

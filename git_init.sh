@@ -6,7 +6,7 @@
 DEBUG="false"
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-user=$(. $BASEDIR/installers/get_curent_user.sh)
+user=$(. $BASEDIR/tools/get_curent_user.sh)
 path="/home/$user/Shell"	# cesta k /home/user/Shell
 
 # colors

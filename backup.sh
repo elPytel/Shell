@@ -17,7 +17,7 @@
 DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptui
-user=$(. $BASEDIR/installers/get_curent_user.sh)
+user=$(. $BASEDIR/tools/get_curent_user.sh)
 path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 

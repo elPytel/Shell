@@ -7,7 +7,7 @@ DEBUG="false"
 
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-user=$(. $BASEDIR/installers/get_curent_user.sh)
+user=$(. $BASEDIR/tools/get_curent_user.sh)
 path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
@@ -105,7 +105,7 @@ case $arg in
 		$vpn_tool -s state | grep "state" | uniq | cut -d":" -f2
 	;;
 	*) # Default condition
-		echo -e "${Red}Unknown parametr: $arg${NC}"
+		echo -e "${Red}Unknown parametr:${NC} $arg"
 		exit 2
         ;;
 esac
