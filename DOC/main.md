@@ -1,26 +1,9 @@
 
 # Dokumentace
 Pro věští scripty/aplikace:
-* ## [backup](backup.md) 
-* ## [mount_SMB](mount_SMB.md)
+* ### [backup](backup.md) 
+* ### [mount_SMB](mount_SMB.md)
 
-## Scripty
-Já jsem si přidal *~/Shell* do `PATH`, takže všechny tyto scripty mohu spouštět bez cesty.
-
-### connect_to_mobile.sh
-Spustí aplikaci **scrcpy**, která umožnuje zobrazení displeje, telefonu, který je připojený přes USB, a má povolené vývojářké možnosti.
-
-### defoult_terminal.sh
-Vyvolá výběrové okno pro volkbu výchozího emulátoru terminálu.
-
-### git_init.sh
-Umožnuje inizializovat **GitHub** repozitář ve zvoleném adresáři.
-
-### lights0ff.sh
-Po spuštění zhasne displej notebooku.
-
-### updater.sh
-Vyžádá rootovská oprávnění a poté provede aktualizaci.
 
 ## Instalačky
 
@@ -86,13 +69,8 @@ Převede $1 (počet sekund) na standardní formát času a vypíše ho do stdout
 
 ### get_curent_user.sh
 
-Slouží pro nalezení akturální neootovského uživatele, který spustil instailční script.
+Slouží pro nalezení akturální nerootovského uživatele, který spustil instailční script.
 
 ### yes_no
 
 Rozpozná $1 ano/ne a vrátí 0/1 jako exit value.
-```
-0	Y,y,Yes,yes
-1	N,n,No,no
-2	*
-```

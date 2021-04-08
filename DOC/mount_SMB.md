@@ -13,7 +13,7 @@ COMMANDS:
   -c --connections	 print all configurated connections
 ```
 
-## Template pro konfikurační soubor 
+## Template pro konfigurační soubor 
 Pojmenujte jej `.mount.conf` a umístěte do stejného adresáře jako hlavní script (ideálně: */home/user/Shell/*).
 ```BASH
 drives=<vycet hlavicek odeleny mezerami>

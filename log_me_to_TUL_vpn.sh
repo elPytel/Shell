@@ -5,10 +5,6 @@
 #DEBUG="true"
 DEBUG="false"
 
-PROFILE="TUL"
-HOST="vpn.tul.cz"
-USERNAME="jaroslav.korner@tul.cz"
-
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/installers/get_curent_user.sh)
@@ -83,15 +79,15 @@ case $arg in
 				fi
 				;;
 			*) # profil zatím není zvolen
-				echo -e "${Red}ERROR:${NC} not implemented yet!"
 				echo "Chose one number from: "
 				number=1
-				for $PROFILE in $PROFILES
+				for PROFILE in $PROFILES; do
 					echo "  $number) $PROFILE"
 					number=$(( $number + 1 ))
+				done
 				read choice
-				# TODO 
-				profile=$(echo $PROFILES | tr " " "\n")
+				profile=$(echo $PROFILES | tr " " "\n" | sed -n ${choice}p)
+				$DEBUG && echo "Profile: $profile"
 				# rekurzivni spusteni
 				bash $0 -c $profile
 				;;
@@ -102,11 +98,11 @@ case $arg in
 	;;
 	"-d" | "--disconnect")
 		# odpoji se od vpn
-		$vpn_tool disconnect | grep "state" | uniq
+		$vpn_tool disconnect | grep "state" | tail -n 1 | cut -d":" -f2
 	;;
 	"-s" | "--state")
 		# zjisti stav pripojeni
-		$vpn_tool -s state | grep "state" | uniq | tr -d ">"
+		$vpn_tool -s state | grep "state" | uniq | cut -d":" -f2
 	;;
 	*) # Default condition
 		echo -e "${Red}Unknown parametr: $arg${NC}"
