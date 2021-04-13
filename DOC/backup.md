@@ -6,7 +6,8 @@ Soubory:
 Závislosti:
 * colors.sh
 
-Skript slouží pro zálohování, respektive synchronizaci souborů mezi disky.
+Skript slouží pro zálohování, respektive synchronizaci souborů mezi disky. 
+Je stežejní, aby adresa a true/false byli odděleny **tabulátorem** a ne mezerami!
 > ```BASH
 > backups=<vycet odeleny mezrerami>
 > # <prarametr>=<volba>   <je v mountu?>

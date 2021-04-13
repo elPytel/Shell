@@ -4,5 +4,5 @@
 
 xset dpms force off
 
-exit
+exit 0
 #END

@@ -6,13 +6,11 @@
 DEBUG="false"
 
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
-BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-user=$(. $BASEDIR/tools/get_curent_user.sh)
-path="/home/$user/Shell"        # cesta k skriptum
-$DEBUG && echo "path: $BASEDIR"
+path=$(dirname "$0")         # adresa k tomuto skriptu
+$DEBUG && echo "path: $path"
 
 # colors
-source $BASEDIR/tools/colors.sh
+source $path/tools/colors.sh
 
 config=".vpn.conf"
 PROFILES=$(cat -n $path/$config | grep "vpns" | cut -d"=" -f2)
