@@ -8,7 +8,7 @@
 # vybrat: Internetový počítač
 # systemctl reload postfix
 
-#mail -s "Test Subject" jaroslav.korner1@gmail.com < /dev/null
+#mail -s "Test Subject" <email>@gmail.com < /dev/null
 
 #DEBUG="true"
 DEBUG="false"
@@ -23,8 +23,7 @@ subject="Logs"  # datum a nazev
 $DEBUG && echo "Subject: $subject"
 
 # odeslani e-mailem
-#FILES="~/.my.log ~/.backup.log ~/.startup.log"
-FILES=".test.log"
+FILES="~/.my.log ~/.backup.log ~/.startup.log"
 for FILE in $FILES; do
 	files="$files -A $FILE"
 done
