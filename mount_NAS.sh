@@ -118,14 +118,14 @@ case $arg in
 		# vypise konfigurovana spojeni
 		echo $(cat $path/$config | grep "drives" | cut -d"=" -f2)
 		;;
-        "-l" | "--list")
-                # vypise pripojene disky
-                gio mount -l | grep "^[^ ]" | grep "Mount"
-        	;;
-        *)
-                # Default condition
-                echo -e "${Red}Unknown parametr: $arg${NC}"
-                exit 2
+	"-l" | "--list")
+		# vypise pripojene disky
+		gio mount -l | grep "^[^ ]" | grep "Mount"
+		;;
+	*)
+		# Default condition
+		echo -e "${Red}Unknown parametr: $arg${NC}"
+		exit 2
 		;;
 esac
 

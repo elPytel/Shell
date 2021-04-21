@@ -59,6 +59,7 @@ for FILE in $FILES; do
 	name_OLD=$(echo $name | cut -d"." -f1,2)_OLD.log
 	eval rm $name_OLD				# odstrani stary
 	eval mv $name $name_OLD; ec=$?	# prejmenuje novy na stary (_OLD)
+	eval touch $name				# vygeneruje novy prazdny
 	if [ $ec -eq 0 ]; then
 	       echo -e "File: $name renamed to: $name_OLD"
 	fi
