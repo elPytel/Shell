@@ -5,9 +5,9 @@
 #DEBUG=true
 DEBUG=false
 
-SLEEP_TIME=0.2
+SLEEP_TIME=2
 cycle=3
-thread_gap=2
+thread_gap=0.2
 file="founded_ips.txt"
 running_threads=0
 
@@ -44,9 +44,38 @@ function setMask () {		# ( mask )
 	return 0
 }
 
-function setFileName () {
+function setFileName () { # ( file_name )
 	file=$1
 	return 0
+}
+
+function thread++ () {
+	running_threads=$(( $running_threads +1 ))
+	$DEBUG && echo $running_threads
+}
+
+function thread-- () {
+	running_threads=$(( $running_threads -1 ))
+}
+
+function pingIt () { # ( ip )
+	thread++
+	local l_address=$1
+	
+	# ping'em
+	ping $l_address -4 -c $cycle >> /dev/null; ec=$?
+	if [ $ec -ne 0 ]; then 
+		sleep $SLEEP_TIME
+		ping $l_address -4 -c $cycle >> /dev/null; ec=$?
+	fi
+	
+	# adresa byla kontaktovana uspesne
+	if [ $ec -eq 0 ]; then
+		echo $l_address >> $file
+		return 0
+	fi
+	thread--
+	return 1
 }
 
 $DEBUG && echo "Args: [$@]"
@@ -91,28 +120,23 @@ fi
 if $DEBUG ; then
 	echo "Network: $network"
 	echo "Mask: $mask"
+	echo "Sleep time: $SLEEP_TIME"
+	echo "Ping cycles: $cycle"
+	echo "Thread gap: $thread_gap"
+	echo "File: $file"
 fi
 
 # execute
 for address in $(tools/generate_ips.sh $network $mask); do
 	$DEBUG && echo "Adresa: $address"
-
-	# >> /dev/null 
-	ping $address -4 -c $cycle >> /dev/null; ec=$?
-	if [ $ec -ne 0 ]; then 
-		sleep $SLEEP_TIME
-		ping $address -4 -c $cycle >> /dev/null; ec=$?
-	fi
-	
-	#echo "ec: $ec"
-	# adresa byla kontaktovana uspesne
-	if [ $ec -eq 0 ]; then
-		echo $address 
-	fi
+	pingIt $address &
+	sleep $thread_gap
+	$DEBUG && echo "Number of running threads: $running_threads"
 done
 
 while [ $running_threads -ne 0 ]; do
 	sleep 5
+	#TODO spiner
 done
 
 exit 0
