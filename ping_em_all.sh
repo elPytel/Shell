@@ -6,6 +6,9 @@
 DEBUG=false
 
 SLEEP_TIME=0.2
+cycle=3
+thread_gap=2
+file="founded_ips.txt"
 
 function printHelp () {
 	echo -e "COMMANDS:"
@@ -13,7 +16,10 @@ function printHelp () {
 	echo -e "  -d --debug\t enable debug output"
     echo -e "  -n --network\t setup network, expect: xxx.xxx.xxx.xxx"
     echo -e "  -m --mask\t setup mask, expect: xxx.xxx.xxx.xxx"
+	echo -e "  -c --cycle\t setup number of ping cycles."
 	echo -e "  -s --sleep\t setup sleep time in sec, expect: x.x"
+	echo -e "  -T --time\t setup thread gap time."
+	echo -e "  -f --file\t setup output file name."
 }
 
 function setNetwork () {	# ( network )
@@ -24,7 +30,7 @@ function setNetwork () {	# ( network )
 	return 0
 }
 
-function setMask () {
+function setMask () {		# ( mask )
 	if [ $# -ne 1 ]; then
 		return 1
 	fi
@@ -37,6 +43,10 @@ function setMask () {
 	return 0
 }
 
+function setFileName () {
+	file=$1
+	return 0
+}
 
 $DEBUG && echo "Args: [$@]"
 
@@ -51,7 +61,10 @@ while [ $# -gt 0 ] ; do
 		-d | --debug) 	DEBUG="true";;
 		-n | --network) shift; setNetwork $1 || exit 3;;
 		-m | --mask) 	shift; setMask $1 || exit 4;;
+		-c | --cycle)	shift; cycle=$1;;
 		-s | --sleep)	shift; SLEEP_TIME=$1;;
+		-T | --time)	shift; thread_gap=$1;;
+		-f | --file)	shift; setFileName $1 || exit 5;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
 	esac
 
@@ -72,6 +85,7 @@ if [ -z $mask ]; then
 	setMask $input || exit 4 
 fi
 
+
 # debug output
 if $DEBUG ; then
 	echo "Network: $network"
@@ -83,10 +97,10 @@ for address in $(tools/generate_ips.sh $network $mask); do
 	$DEBUG && echo "Adresa: $address"
 
 	# >> /dev/null 
-	ping $address -4 -c 5 >> /dev/null; ec=$?
+	ping $address -4 -c $cycle >> /dev/null; ec=$?
 	if [ $ec -ne 0 ]; then 
 		sleep $SLEEP_TIME
-		ping $address -4 -c 5 >> /dev/null; ec=$?
+		ping $address -4 -c $cycle >> /dev/null; ec=$?
 	fi
 	
 	#echo "ec: $ec"
