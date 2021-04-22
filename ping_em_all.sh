@@ -9,6 +9,7 @@ SLEEP_TIME=0.2
 cycle=3
 thread_gap=2
 file="founded_ips.txt"
+running_threads=0
 
 function printHelp () {
 	echo -e "COMMANDS:"
@@ -110,36 +111,9 @@ for address in $(tools/generate_ips.sh $network $mask); do
 	fi
 done
 
+while [ $running_threads -ne 0 ]; do
+	sleep 5
+done
+
 exit 0
 #END
-
-
-function initAddress () {
-	net=0; msk=0;
-	for i in {1..4}; do
-		net=$(( $net * 1000 ))
-		net_part=$(echo $network | cut -d"." -f$i)
-		net=$(( $net + $net_part ))
-		
-		msk=$(( $msk * 1000 ))
-		msk_part=$(echo $mask | cut -d"." -f$i)
-		msk=$(( $msk + $msk_part ))
-	done
-
-	binMask=$(bc <<< "obase=2;$msk")
-	binNet=$(bc <<< "obase=2;$net")
-	binAddr=$(echo $binMask | tr -d "1") 
-	
-	if $DEBUG ; then
-		echo -e "Net: $net\t Mask: $msk"
-		echo "Binary network: $binNet"
-		echo "Binary mask: $binMask"
-		echo "Binary address: $binAddr"
-	fi
-	exit 1
-}
-
-function nextAddress () {
-	return 1
-}
-
