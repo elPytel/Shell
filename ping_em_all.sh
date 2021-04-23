@@ -11,6 +11,8 @@ SLEEP_TIME=0.2
 cycle=3
 thread_gap=0.3
 file="founded_ips.txt"
+toFile=false
+exec {FD}<>$file
 
 function spinner () {
 	spin='- \ | /'
@@ -41,6 +43,7 @@ function printHelp () {
 	echo -e "  -s --sleep\t setup sleep time in sec, expect: x.x"
 	echo -e "  -T --time\t setup thread gap time."
 	echo -e "  -f --file\t setup output file name."
+	echo -e "  -F --toFile\t send output to file."
 }
 
 function setNetwork () {	# ( network )
@@ -92,7 +95,13 @@ function pingIt () { # ( ip )
 
 	# adresa byla kontaktovana uspesne
 	if [ $ec -eq 0 ]; then
-		echo $l_address >> $file
+		if $toFile; then
+			flock $FD		# kritická sekce
+			echo $l_address >> $file
+			flock -u $FD
+		else
+			echo $l_address
+		fi
 		return 0
 	fi
 	return 1
@@ -108,13 +117,14 @@ while [ $# -gt 0 ] ; do
 	# vyhodnoceni
 	case $arg in
 		-h | --help) 	printHelp; exit 2;;
-		-d | --debug) 	DEBUG="true";;
+		-d | --debug) 	DEBUG=true;;
 		-n | --network) shift; setNetwork $1 || exit 3;;
 		-m | --mask) 	shift; setMask $1 || exit 4;;
 		-c | --cycle)	shift; cycle=$1;;
 		-s | --sleep)	shift; SLEEP_TIME=$1;;
 		-T | --time)	shift; setThreadGap $1 || exit 6;;
 		-f | --file)	shift; setFileName $1 || exit 5;;
+		-F | --toFile)	toFile=true;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
 	esac
 
@@ -143,25 +153,32 @@ if $DEBUG ; then
 	echo "Sleep time: $SLEEP_TIME"
 	echo "Ping cycles: $cycle"
 	echo "Thread gap: $thread_gap"
+	echo "To file: $toFile"
 	echo "File: $file"
 fi
 
 # execute
-hideCursor
-spinner &
-spinnerPID=$!
+if $toFile; then
+	hideCursor
+	spinner &
+	spinnerPID=$!
+fi
 
 for address in $(tools/generate_ips.sh $network $mask); do
-	echo -ne "\033[0K\r  pinging: $address"
+	if $toFile; then
+		echo -ne "\033[0K\r  pinging: $address"
+	fi
 	pingIt $address &
 	sleep $thread_gap
 done
 
 sleep 10 
 
-kill $spinnerPID
-showCursor
+if $toFile; then
+	kill $spinnerPID
+	showCursor
+	echo -e "\nDone"
+fi
 
-echo -e "\nDone"
 exit 0
 #END
