@@ -9,26 +9,49 @@ file="mt.out"
 rm $file
 MAX=10
 sharedMemory="/dev/shm"
+running_threads="running_threads"
+eps="1.0e-6"
 
 # init
-var="$sharedMemory/running_threads"
+var="$sharedMemory/$running_threads"
 echo 0 > $var;
 
+function showCursor () {
+    tput cnorm
+}
+
+function hideCursor () {
+    tput civis
+}
+
 function threads++ () {
-	local var="$sharedMemory/running_threads"
+	local var="$sharedMemory/$running_threads"
+    while [ -f $var.mtx ]; do
+		sleep $eps
+	done
+	touch $var.mtx
 	echo $(($(<$var)+1)) > $var;
-    $DEBUG && echo $(threads)
+	rm $var.mtx
+	$DEBUG && echo $(threads)
 }
 
 function threads-- () {
-    local var="$sharedMemory/running_threads"
-    echo $(($(<$var)-1)) > $var;
+    local var="$sharedMemory/$running_threads"
+    while [ -f $var.mtx ]; do
+        sleep $eps
+    done
+    touch $var.mtx
+	echo $(($(<$var)-1)) > $var;
+	rm $var.mtx
 	$DEBUG && echo $(threads)
 }
 
 function threads () {
-	local var="$sharedMemory/running_threads"
-	echo $(<$var)
+    while [ -f $var.mtx ]; do
+        sleep $eps
+    done
+	local var="$sharedMemory/$running_threads"
+    echo $(<$var)
 }
 
 function worker () { # ( file_name id )
@@ -48,13 +71,6 @@ function worker () { # ( file_name id )
 	exit 0
 }
 
-function show_cursor() {
-    tput cnorm
-}
-
-function hide_cursor() {
-    tput civis
-}
 
 if $DEBUG; then
 	echo $file
@@ -69,7 +85,7 @@ for i in $RANGE; do
 	sleep 0.1
 done
 
-hide_cursor
+hideCursor
 ./spinner.sh &
 spinnerPID=$!
 last=-1
@@ -82,7 +98,7 @@ while [ $(threads) -ne 0 ]; do
 done
 
 kill $spinnerPID
-show_cursor
+showCursor
 echo -e "\nDone"
 exit 0
 #END

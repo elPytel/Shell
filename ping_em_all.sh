@@ -2,14 +2,23 @@
 # By Pytel
 # Skript pro zahlceni site pomoci pingu.
 
+# ./ping_em_all.sh -n 192.168.1.0 -m 255.255.255.0 -d
+
 #DEBUG=true
 DEBUG=false
 
-SLEEP_TIME=2
+SLEEP_TIME=0.2
 cycle=3
-thread_gap=0.2
+thread_gap=0.05
 file="founded_ips.txt"
-running_threads=0
+
+function showCursor () {
+    tput cnorm
+}
+
+function hideCursor () {
+    tput civis
+}
 
 function printHelp () {
 	echo -e "COMMANDS:"
@@ -49,17 +58,63 @@ function setFileName () { # ( file_name )
 	return 0
 }
 
-function thread++ () {
-	running_threads=$(( $running_threads +1 ))
-	$DEBUG && echo $running_threads
+function setThreadGap () { # ( threadGap )
+	if [ $# -ne 1 ]; then
+        return 1
+    fi
+	thread_gap=$1
+	if [ thread_gap -eq 0 ]; then
+		thread_gap=$(( $thread_gap + 0.001 ))
+	fi
+	exit 0
 }
 
-function thread-- () {
-	running_threads=$(( $running_threads -1 ))
+function threadInit () {
+	sharedMemory="/dev/shm"
+	running_threads="running_threads"
+	local file=$sharedMemory/$running_threads
+	# open file and make file decriptor
+	exec {FD}<>$file
+	# init thread count to -1
+	echo 0 > $file
+	$DEBUG && echo "Lock file descriptor: $FD"
+}
+
+function threadFree () {
+	rm $sharedMemory/$running_threads
+}
+
+function threads++ () {
+	local file=$sharedMemory/$running_threads
+	flock $FD
+	touch $file.mtx
+	echo $(( $(<$file) +1 )) > $file;
+	rm $file.mtx
+	flock -u $FD
+	$DEBUG && echo $(threads)
+}
+
+function threads-- () {
+	local file=$sharedMemory/$running_threads
+	flock $FD		# nacatek kriticke sekce
+	touch $file.mtx
+	echo $(( $(<$file) -1 )) > $file;
+	rm $file.mtx
+	flock -u $FD	# uvolneni file-locku
+	$DEBUG && echo $(threads)
+}
+
+# vrati hodnotu thread
+function threads () {
+	(	
+		flock $FD
+		local file=$sharedMemory/$running_threads
+		echo $(<$file)
+	)	# konec sub-shelu, lock se automaticky uvolni
 }
 
 function pingIt () { # ( ip )
-	thread++
+	threads++
 	local l_address=$1
 	
 	# ping'em
@@ -68,13 +123,13 @@ function pingIt () { # ( ip )
 		sleep $SLEEP_TIME
 		ping $l_address -4 -c $cycle >> /dev/null; ec=$?
 	fi
-	
+
+	threads--
 	# adresa byla kontaktovana uspesne
 	if [ $ec -eq 0 ]; then
 		echo $l_address >> $file
 		return 0
 	fi
-	thread--
 	return 1
 }
 
@@ -93,7 +148,7 @@ while [ $# -gt 0 ] ; do
 		-m | --mask) 	shift; setMask $1 || exit 4;;
 		-c | --cycle)	shift; cycle=$1;;
 		-s | --sleep)	shift; SLEEP_TIME=$1;;
-		-T | --time)	shift; thread_gap=$1;;
+		-T | --time)	shift; setThreadGap $1 || exit 6;;
 		-f | --file)	shift; setFileName $1 || exit 5;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
 	esac
@@ -127,17 +182,31 @@ if $DEBUG ; then
 fi
 
 # execute
+threadInit
+
+#TODO spinner
+hideCursor
+#./test/spinner.sh &
+spinnerPID=$!
+
 for address in $(tools/generate_ips.sh $network $mask); do
-	$DEBUG && echo "Adresa: $address"
+	echo -ne "\033[0K\r  pinging: $address"
 	pingIt $address &
 	sleep $thread_gap
-	$DEBUG && echo "Number of running threads: $running_threads"
+	$DEBUG && echo "  Number of running threads: $(threads)"
 done
 
-while [ $running_threads -ne 0 ]; do
-	sleep 5
-	#TODO spiner
+echo ""
+
+while [ $(threads) -ne 0 ]; do
+	sleep 0.5
+	echo -ne "\033[0K\r  running threads: $(threads)"
 done
 
+threadFree
+kill $spinnerPID
+showCursor
+
+echo -e "\nDone"
 exit 0
 #END
