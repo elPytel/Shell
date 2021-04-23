@@ -80,7 +80,52 @@ function setThreadGap () { # ( threadGap )
 	exit 0
 }
 
+function threadInit () {
+	sharedMemory="/dev/shm"
+	running_threads="running_threads"
+	local file=$sharedMemory/$running_threads
+	# open file and make file decriptor
+	exec {FD}<>$file
+	# init thread count to -1
+	echo 0 > $file
+	$DEBUG && echo "Lock file descriptor: $FD"
+}
+
+function threadFree () {
+	rm $sharedMemory/$running_threads
+}
+
+function threads++ () {
+	local file=$sharedMemory/$running_threads
+	flock $FD
+	touch $file.mtx
+	echo $(( $(<$file) +1 )) > $file;
+	rm $file.mtx
+	flock -u $FD
+	$DEBUG && echo $(threads)
+}
+
+function threads-- () {
+	local file=$sharedMemory/$running_threads
+	flock $FD		# nacatek kriticke sekce
+	touch $file.mtx
+	echo $(( $(<$file) -1 )) > $file;
+	rm $file.mtx
+	flock -u $FD	# uvolneni file-locku
+	$DEBUG && echo $(threads)
+}
+
+# vrati hodnotu thread
+function threads () {
+	(	
+		flock $FD
+		local file=$sharedMemory/$running_threads
+		echo $(<$file)
+	)	# konec sub-shelu, lock se automaticky uvolni
+}
+
 function pingIt () { # ( ip )
+	threads++
 	local l_address=$1
 	
 	# ping'em
@@ -90,6 +135,7 @@ function pingIt () { # ( ip )
 		ping $l_address -4 -c $cycle >> /dev/null; ec=$?
 	fi
 
+	threads--
 	# adresa byla kontaktovana uspesne
 	if [ $ec -eq 0 ]; then
 		echo $l_address >> $file
@@ -147,6 +193,9 @@ if $DEBUG ; then
 fi
 
 # execute
+threadInit
+
+#TODO spinner
 hideCursor
 spinner &
 spinnerPID=$!
@@ -155,10 +204,17 @@ for address in $(tools/generate_ips.sh $network $mask); do
 	echo -ne "\033[0K\r  pinging: $address"
 	pingIt $address &
 	sleep $thread_gap
+	$DEBUG && echo "  Number of running threads: $(threads)"
 done
 
-sleep 10 
+echo ""
 
+while [ $(threads) -ne 0 ]; do
+	sleep 0.5
+	echo -ne "\033[0K\r  running threads: $(threads)"
+done
+
+threadFree
 kill $spinnerPID
 showCursor
 
