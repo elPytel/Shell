@@ -9,7 +9,7 @@ DEBUG=false
 
 SLEEP_TIME=0.2
 cycle=3
-thread_gap=0.3
+thread_gap=0.08
 file="founded_ips.txt"
 
 function spinner () {
@@ -84,23 +84,27 @@ function threadInit () {
 	sharedMemory="/dev/shm"
 	running_threads="running_threads"
 	local file=$sharedMemory/$running_threads
-	# open file and make file decriptor
-	exec {FD}<>$file
-	# init thread count to -1
-	echo 0 > $file
+	local lock=$sharedMemory/$running_threads.mtx
+	# create lock
+	touch $lock
+	# init thread count to 0
+    echo 0 > $file
+	# make lock file decriptor
+	exec {FD}<>$lock
 	$DEBUG && echo "Lock file descriptor: $FD"
 }
 
 function threadFree () {
 	rm $sharedMemory/$running_threads
+	rm $sharedMemory/$running_threads.mtx
 }
 
 function threads++ () {
 	local file=$sharedMemory/$running_threads
 	flock $FD
-	touch $file.mtx
+	touch $file.OLDmtx
 	echo $(( $(<$file) +1 )) > $file;
-	rm $file.mtx
+	rm $file.OLDmtx
 	flock -u $FD
 	$DEBUG && echo $(threads)
 }
@@ -108,9 +112,9 @@ function threads++ () {
 function threads-- () {
 	local file=$sharedMemory/$running_threads
 	flock $FD		# nacatek kriticke sekce
-	touch $file.mtx
+	touch $file.OLDmtx
 	echo $(( $(<$file) -1 )) > $file;
-	rm $file.mtx
+	rm $file.OLDmtx
 	flock -u $FD	# uvolneni file-locku
 	$DEBUG && echo $(threads)
 }
@@ -200,7 +204,7 @@ hideCursor
 spinner &
 spinnerPID=$!
 
-for address in $(tools/generate_ips.sh $network $mask); do
+for address in $(../tools/generate_ips.sh $network $mask); do
 	echo -ne "\033[0K\r  pinging: $address"
 	pingIt $address &
 	sleep $thread_gap
