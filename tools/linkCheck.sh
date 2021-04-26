@@ -6,15 +6,15 @@ if [ $# -ne 1 ]; then
         exit 1
 fi
 link=$1
-if [ -L $link ] ; then
-   if [ -e $link ] ; then
+if [ -L "$link" ] ; then
+   if [ -e "$link" ] ; then
       echo "Good link"
       exit 0
    else
       echo "Broken link"
       exit 2
    fi
-elif [ -e $link ] ; then
+elif [ -e "$link" ] ; then
    echo "Not a link"
    exit 3
 else

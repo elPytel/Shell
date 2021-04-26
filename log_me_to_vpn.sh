@@ -2,8 +2,8 @@
 # By Pytel
 # Skript pro zalogovani do TUL vpn
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 function printHelp () {
 	#echo -e "${Green}Valid arguments: ${NC} connect | disconnect | state"
@@ -21,11 +21,11 @@ path=$(dirname "$0")         # adresa k tomuto skriptu
 $DEBUG && echo "path: $path"
 
 # colors
-source $path/tools/colors.sh
+source "$path"/tools/colors.sh
 
 config=".vpn.conf"
-PROFILES=$(cat -n $path/$config | grep "vpns" | cut -d"=" -f2)
-len=$(wc -l $path/$config | cut -d" " -f1)      # conf file len
+PROFILES=$(cat -n "$path"/$config | grep "vpns" | cut -d"=" -f2)
+len=$(wc -l "$path"/$config | cut -d" " -f1)      # conf file len
 
 # top -bn 1 | grep vpnagentd
 
@@ -41,7 +41,7 @@ case $# in
 	0) prinHelp; exit 2;;
 	1) arg=$1;;
 	2) # zadan vyber profilu
-		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l    ) -eq 1 ]; then
+		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l) -eq 1 ]; then
 			arg=$1
 			PROFILES=$2
 		fi
@@ -57,21 +57,21 @@ $DEBUG && echo "vpns: $PROFILES"
 case $arg in
 	"-c" | "--connect")
 		# pripoji se pres vpn 
-		case $(echo $PROFILES | wc -w) in
+		case $(echo "$PROFILES" | wc -w) in
 			1) # profil je jiz zvolen
 				# najiti intervalu
-                        	start_line=$(cat -n $path/$config | tail -n $(( $len - 1 )) | grep "#" | grep $PROFILES | cut -f1 | tr -d " ")
-                        	stop_line=$(cat -n $path/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+				start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "#" | grep "$PROFILES" | cut -f1 | tr -d " ")
+				stop_line=$(cat -n "$path"/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
 
 				# parse
 				profile=$PROFILES
-				host=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "host" | cut -d"=" -f2)
-				username=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "user" | cut -d"=" -f2)
+				host=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "host" | cut -d"=" -f2)
+				username=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "user" | cut -d"=" -f2)
 				echo -e "${Green}Connecting to: ${Blue}$host${NC}"
-                		echo -e "${Green}As user: ${Blue}$user${NC}"
+				echo -e "${Green}As user: ${Blue}$username${NC}"
 				
-				if [ $(sed -n "${start_line},${stop_line}p" $path/$config | grep "passwd" | wc -l) -eq 1 ]; then
-					password=$(sed -n "${start_line},${stop_line}p" $path/$config | grep "passwd" | cut -d"=" -f2)
+				if [ $(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" -c) -eq 1 ]; then
+					password=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" | cut -d"=" -f2)
 				else
 					echo -en "${Green}Type your password: ${NC}"    
                 			read -s password
@@ -85,15 +85,15 @@ case $arg in
 					number=$(( $number + 1 ))
 				done
 				read choice
-				profile=$(echo $PROFILES | tr " " "\n" | sed -n ${choice}p)
+				profile=$(echo "$PROFILES" | tr " " "\n" | sed -n ${choice})
 				$DEBUG && echo "Profile: $profile"
 				# rekurzivni spusteni
-				bash $0 -c $profile
+				bash "$0" -c "$profile"
 				;;
 		esac 
 		
 		line=$profile'\n\n'$password
-		printf "$line" | $vpn_tool -s connect $host
+		printf "%s" "$line" | $vpn_tool -s connect "$host"
 	;;
 	"-d" | "--disconnect")
 		# odpoji se od vpn

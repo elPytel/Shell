@@ -11,11 +11,11 @@ room="a03"		# adresa ucebny
 school=".nti.tul.cz"	# adresa skoly
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-user=$(. $BASEDIR/tools/get_curent_user.sh)
+user=$(. "$BASEDIR"/tools/get_curent_user.sh)
 path="/home/$user/Shell"	# cesta k skriptum
 
 # colors
-source $BASEDIR/tools/colors.sh
+source "$BASEDIR"/tools/colors.sh
 
 echo -n "Which pc? [01 - $num_pc]: "
 read number
@@ -34,20 +34,20 @@ then
 fi
 
 # bezi vpn?
-state=$(bash $path/log_me_to_vpn.sh --state | tr -d " ")
-$DEBUG && echo $state
-if [ $state == "Connected" ] 
+state=$(bash "$path"/log_me_to_vpn.sh --state | tr -d " ")
+$DEBUG && echo "$state"
+if [ "$state" == "Connected" ] 
 then
 	echo -e "${Green}VPN connected.${NC}"
-elif [ $state == "Disconnected" ]
+elif [ "$state" == "Disconnected" ]
 then	
-	bash $path/log_me_to_vpn.sh --connect TUL
+	bash "$path"/log_me_to_vpn.sh --connect TUL
 fi
 
 # ssh do skoly
 address="@$room$number$school"        # adresa ucebny
 echo "ssh $name$address"
-ssh $name$address
+ssh "$name$address"
 
 exit 0
 #END

@@ -16,16 +16,16 @@ DEBUG="false"
 path=$(dirname "$0")         # adresa k tomuto skriptu
 
 # colors
-source $path/tools/colors.sh
+source "$path"/tools/colors.sh
 
 config=".email.conf"
 subject="Logs $(date | cut -d"," -f1)"			# datum a nazev
 $DEBUG && echo "Subject: $subject"
 
 # odeslani e-mailem
-FILES=$(cat $path/$config | grep "files2send=" | cut -d"=" -f2)
+FILES=$(cat "$path"/$config | grep "files2send=" | cut -d"=" -f2)
 for FILE in $FILES; do
-	files="$files -A "$(eval echo $FILE)
+	files="$files -A "$(eval echo "$FILE")
 	#files="$files -A $FILE"
 done
 #files=~/.my.log
@@ -33,10 +33,10 @@ $DEBUG && echo "Files: $files"
 
 
 # odeslani
-email=$(cat $path/$config | grep "e-mail=" | cut -d"=" -f2)
+email=$(cat "$path"/$config | grep "e-mail=" | cut -d"=" -f2)
 echo -e "${Green}Sending to email:${NC} $email"
 #mail -s "$subject" -A ~/.my.log -A ~/.backup.log -A ~/.startup.log $email < /dev/null; ec=$?
-mail -s "$subject" $files $email < /dev/null; ec=$?
+mail -s "$subject" "$files" "$email" < /dev/null; ec=$?
 #ec=0
 case $ec in
 	0) echo "E-mail: $subject, sent OK.";;
@@ -55,11 +55,11 @@ for FILE in $FILES; do
 	#fi
 	
 	name=$FILE
-	$DEBUG && echo $name
-	name_OLD=$(echo $name | cut -d"." -f1,2)_OLD.log
-	eval rm $name_OLD				# odstrani stary
-	eval mv $name $name_OLD; ec=$?	# prejmenuje novy na stary (_OLD)
-	eval touch $name				# vygeneruje novy prazdny
+	$DEBUG && echo "$name"
+	name_OLD=$(echo "$name" | cut -d"." -f1,2)_OLD.log
+	eval rm "$name_OLD"				# odstrani stary
+	eval mv "$name" "$name_OLD"; ec=$?	# prejmenuje novy na stary (_OLD)
+	eval touch "$name"				# vygeneruje novy prazdny
 	if [ $ec -eq 0 ]; then
 	       echo -e "File: $name renamed to: $name_OLD"
 	fi
