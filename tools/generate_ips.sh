@@ -13,24 +13,24 @@ fi
 network=$1
 mask=$2
 
-if [ $(echo $network | grep -o . | grep '\.' -c) -ne 3 ]; then
+if [ $(echo "$network" | grep -o . | grep '\.' -c) -ne 3 ]; then
     return 2
 fi
-if [ $(echo $mask | grep -o . | grep '\.' -c) -ne 3 ]; then
+if [ $(echo "$mask" | grep -o . | grep '\.' -c) -ne 3 ]; then
 	return 3
 fi
 
 ips=""
 for i in {1..4}; do
 	# vyber pozit
-	net_part=$(echo $network | cut -d"." -f$i)
-	mask_part=$(echo $mask | cut -d"." -f$i)
+	net_part=$(echo "$network" | cut -d"." -f$i)
+	mask_part=$(echo "$mask" | cut -d"." -f$i)
 	
 	# vyhodnoceni
 	range=$(( 255 - $mask_part ))
 	if [ $i -eq 4 ]; then
 		range=$(( $range - 1 ))		# vyradi broad cast
-		if [ $net_part -eq 0 ]; then
+		if [ "$net_part" -eq 0 ]; then
 			net_part=$(( $net_part + 1 ))	# vyradi cislo site
 			range=$(( $range - 1 ))
 		fi
@@ -44,7 +44,7 @@ for i in {1..4}; do
 
 	if $DEBUG ; then
 		echo -e "$net_part\t $mask_part"
-		echo "len: $max"
+		echo "len: $range"
 	fi
 done
 

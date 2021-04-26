@@ -108,7 +108,7 @@ function pingIt () { # ( ip )
 	return 1
 }
 
-$DEBUG && echo "Args: [$@]"
+$DEBUG && echo "Args: [$*]"
 
 # parse input
 arg=$1
