@@ -5,6 +5,17 @@
 #DEBUG="true"
 DEBUG="false"
 
+function printHelp () {
+	#echo -e "${Green}Valid arguments: ${NC} connect | disconnect | state"
+	echo -e "USE:"
+	echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND CONNECTION"
+	echo ""
+	echo -e "COMMANDS:"
+	echo -e "  -c --connect \t\t to connect to selected vpn"
+	echo -e "  -d --disconnect \t to disconnect from vpn"
+	echo -e "  -s --state \t\t state of vpn connection"	
+}
+
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 path=$(dirname "$0")         # adresa k tomuto skriptu
 $DEBUG && echo "path: $path"
@@ -27,24 +38,14 @@ fi
 
 # zadal validni argumenty?
 case $# in
-	0) # help
-		#echo -e "${Green}Valid arguments: ${NC} connect | disconnect | state"
-	        echo -e "USE:"
-		echo -e "  $(echo $0 | tr "/" "\n" | tail -n 1) COMMAND CONNECTION"
-		echo ""
-		echo -e "COMMANDS:"
-		echo -e "  -c --connect \t\t to connect to selected vpn"
-		echo -e "  -d --disconnect \t to disconnect from vpn"
-		echo -e "  -s --state \t\t state of vpn connection"
-		exit 2
-		;;
+	0) prinHelp; exit 2;;
 	1) arg=$1;;
 	2) # zadan vyber profilu
 		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l    ) -eq 1 ]; then
 			arg=$1
 			PROFILES=$2
-                fi
-                ;;
+		fi
+        ;;
 	*) 
 		echo -e "${Red}Invalid options:${NC} $@"
 	        exit 1

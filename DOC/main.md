@@ -4,6 +4,7 @@ Pro věští scripty/aplikace:
 * ### [backup](backup.md) 
 * ### [mount_SMB](mount_SMB.md)
 * ### [log_me_to_vpn](log_me_to_vpn.md)
+* ### [ping_em_all](ping_em_all.md)
 
 ## Instalačky
 
@@ -63,6 +64,10 @@ Nainstaluje aplikaci Wordgrinder, pokročilý textový editor pro práci v termi
 ### colors.sh
 
 Konfigurační script pro importování barev do terminálu. 
+
+### generate_ips.sh
+
+Script pro generování IP adress v zadaném rozsahu.
 
 ### sec2time.sh
 Převede $1 (počet sekund) na standardní formát času a vypíše ho do stdout.
