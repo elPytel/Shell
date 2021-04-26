@@ -5,6 +5,17 @@
 #DEBUG=true
 DEBUG=false
 
+function printHelp () {
+	echo -e "USE:"
+	echo -e "  $(echo $0 | tr "/" "\n" | tail -n 1) COMMAND [none=all | conf_name]"
+	echo ""
+	echo -e "COMMANDS:"
+	echo -e "  -m --mount  \t\t to mount selected network drive"
+	echo -e "  -u --unmount\t\t to unmount selected network drive"
+	echo -e "  -l --list   \t\t list of mounted drves"
+	echo -e "  -c --connections\t print all configurated connections"
+}
+
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/tools/get_curent_user.sh)
 path="/home/$user/Shell"        # cesta k skriptum
@@ -20,20 +31,9 @@ userid=$(id -u $user)
 
 # zadal validni argumenty?
 case $# in
-	0) 
-		#echo -e "${Green}Valid arguments: ${NC} -m --mount | -u --unmount | -l --list | -c --connections"
-        	echo -e "USE:"
-		echo -e "  $(echo $0 | tr "/" "\n" | tail -n 1) COMMAND [none=all | conf_name]"
-		echo ""
-		echo -e "COMMANDS:"
-		echo -e "  -m --mount  \t\t to mount selected network drive"
-		echo -e "  -u --unmount\t\t to unmount selected network drive"
-		echo -e "  -l --list   \t\t list of mounted drves"
-		echo -e "  -c --connections\t print all configurated connections"
-		exit 2
-		;;
+	0) printHelp; exit 2;;
 	1) arg=$1;;
-	2)
+	2) # zvolil jeden "disk"
 		if [ $(echo "$DRIVES" | tr " " "\n" | grep "$2" | wc -l    ) -eq 1 ]; then
 			arg=$1
 			DRIVES=$2
@@ -89,8 +89,8 @@ case $arg in
 					esac
 					# mount point
 					echo -en "${Green}Link check: ${NC}"
-					$path/linkCheck.sh $mountpoint	
-					ec=$?
+					$path/linkCheck.sh $mountpoint; ec=$?
+
 					case $ec in
 						0) echo "Link to tmp dir established.";;
 						1) echo -e "${Red}ERROR:${NC} Invalid mount point!";;
@@ -101,11 +101,11 @@ case $arg in
 							sudo ln -s $tmplocation $mountpoint
 							;;
 					esac
-        				;;
-        			"-u" | "--unmount")
-                			# odpoji se od sitoveho disku
+       				;;
+        		"-u" | "--unmount")
+          			# odpoji se od sitoveho disku
 					echo -e "${Green}Unmounting: ${Blue}$name${NC}"
-                			case $service in
+               		case $service in
 						"google-drive") gio mount -u "$service://$sharename@$servername";;
 						"smb-share") gio mount -u "smb://$servername/$sharename";;
 					esac

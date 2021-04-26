@@ -65,6 +65,9 @@ apt install vim -y
 # Ranger
 ./ranger.sh
 
+# ShellCheck
+./ShellCheck.sh
+
 # dalsi
 apt install terminator -y
 apt install odt2txt -y	# open dokument to txt
