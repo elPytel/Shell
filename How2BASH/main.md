@@ -47,14 +47,22 @@ esac
 
 ### For & posloupnosti
 
-Vagenerovaná poslouponosti pomocí: {} - "brace expansion"
+Vygenerovaná poslouponosti pomocí: {} - "brace expansion"
+
 `{<start>..<stop>}` nebo `{<start>..<stop>..<krok>}` 
+
 Použití:
-`{1..10}`, `{0..2..20}`
+
+`{1..10}`
+
+`{0..2..20}`
 
 Využitím příkazu `seq`.
+
 `seq <start> <stop>`
+
 `seq <start> <inkrement> <stop>`
+
 Seq je pokročilejší.
 
 Použití cyklu for:
@@ -80,9 +88,17 @@ Příklad použití:
 
 ### Čísla
 
--eq
+* -eq	Equal
+* -ne	Not equal
+* -lt	Less than
+* -le	Less than or equal
+* -gt	Greater than
+* -ge	Greater than or equal
 
--gt
+### Ternární opreátor
+
+`echo $(( a < b ? a : b ))`
+^^ vytiskne vetsi z a/b.
 
 ## Výstup
 `echo "<string>"`
@@ -92,9 +108,9 @@ Za zmínku stojí přepínače:
 
 ### Formátovaný výstup
 Formatovaný výstup pomocí příkazu printf umožnujě tisknout na výstup se standardním formátováním.
-* %s - tisk stringů
-	* %<minlen>.<maxlen>s
-* %d - tisk celých čísel
+* `%s` - tisk stringů
+	* `%<minlen>.<maxlen>s`
+* `%d` - tisk celých čísel
 
 Použití:
 ```BASH
@@ -109,6 +125,7 @@ Uspání procesu na určitý čas umožnuje příkaz `sleep <sec>`, očekává a
 Pro mnohem menší časové intervaly lze použít příkaz `usleep <us>`, který uspí proces na požadovaný počet microsekund.
 
 Použití:
+
 `usleep 1000` uspí proces na 1ms.
 
 ## Výchozí textový editor
@@ -126,8 +143,16 @@ Uživatelův cron:
 
 `$ crontab -e`
 
+Přepínače:
+* `-e`	edit
+* `-l`	lis
+
 Spuštění příkazu ihned po spuštění systému:
 ```BASH
 # run script after reboot
 `@reboot yourScriptPath`
 ```
+
+Další specifické časy:
+
+`@reboot, @yearly or @annually, @monthly, @weekly, @daily, @hourly, @midnight`
