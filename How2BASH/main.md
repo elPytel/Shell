@@ -44,6 +44,20 @@ esac
 
 
 ## Cykly
+
+### For & posloupnosti
+
+Vagenerovaná poslouponosti pomocí: {} - "brace expansion"
+`{<start>..<stop>}` nebo `{<start>..<stop>..<krok>}` 
+Použití:
+`{1..10}`, `{0..2..20}`
+
+Využitím příkazu `seq`.
+`seq <start> <stop>`
+`seq <start> <inkrement> <stop>`
+Seq je pokročilejší.
+
+Použití cyklu for:
 ```
 for <promená> in <výčet>
 do
@@ -77,10 +91,26 @@ Za zmínku stojí přepínače:
  - `-e`, povolí interpretaci escape sekvencí (\n, \t, barev...)
 
 ### Formátovaný výstup
+Formatovaný výstup pomocí příkazu printf umožnujě tisknout na výstup se standardním formátováním.
+* %s - tisk stringů
+	* %<minlen>.<maxlen>s
+* %d - tisk celých čísel
+
+Použití:
 ```BASH
 printf "%.25s...\n" "dataURI: DFASDFKAJELKJDFSADFMLAKFJLSKDJFAJSDFL"
 echo "${yourvar:0:25}..."
 ```
+
+## Časování
+
+Uspání procesu na určitý čas umožnuje příkaz `sleep <sec>`, očekává argument počet vteřin, na jak dlouho se má uspat. Zvládne vyhodnotit i desetiny sekund `sleep 0.1` nebo `sleep 1.0e-1`.
+
+Pro mnohem menší časové intervaly lze použít příkaz `usleep <us>`, který uspí proces na požadovaný počet microsekund.
+
+Použití:
+`usleep 1000` uspí proces na 1ms.
+
 ## Výchozí textový editor
 Umožnuje vybrat defoultní textový editor v systému (Vi, Vim, Nano,...), spouští příkaz: `$ select-editor`.
 
