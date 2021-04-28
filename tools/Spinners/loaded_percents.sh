@@ -74,33 +74,24 @@ while [ $# -gt 0 ] ; do
 	arg=$1
 done
 
+split=$(bc <<< "scale=0 ; $bar_length * $percent / 100")
+
 if $DEBUG; then
 	echo "Percent: $percent"
 	echo "Terminal width: $terminal_width"
 	echo "Bar length -[]: $bar_length"
+	echo "Split: $split"
 fi
 
 validPercent || exit 3;
 
 # construct bar
 ret+="["
-# TODO range
-# "scale=2 ; $var1 / $var2" | bc
-max=$(bc <<< "scale=0 ; $bar_length * $percent / 100")
-$DEBUG && echo "Max: $max"
-range=""
-if [ $max -gt 0 ]; then
-	range=$(eval echo "{0..$(($max-1))}")
-fi
-for i in $range; do
+for (( i=0; i<=$split-1; i++ )); do
 	ret+="="
 done
 ret+=">"
-range=""
-if [ $max -lt $bar_length ]; then
-	range=$(eval echo "{$max..$bar_length}")
-fi
-for i in $range; do
+for (( i=$split; i<=$bar_length; i++ )); do
     ret+=" "
 done
 ret+="]"
