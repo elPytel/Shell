@@ -98,6 +98,7 @@ Příklad použití:
 ### Ternární opreátor
 
 `echo $(( a < b ? a : b ))`
+
 ^^ vytiskne vetsi z a/b.
 
 ## Výstup

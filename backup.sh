@@ -35,10 +35,10 @@ for BACKUP in $BACKUPS
 do
 	echo -e "${Green}Backup: ${Blue}$BACKUP${NC}"
 	# najiti intervalu
-        start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "# $BACKUP" | cut -f1 | tr -d " ")
+	start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "# $BACKUP" | cut -f1 | tr -d " ")
 	stop_line=$(cat -n "$path"/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
 
-        # parse
+	# parse
 	options=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "option" | cut -d"=" -f2)
 	source_dir=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "source" | cut -d"=" -f2 | cut -f1)
 	s_removable=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "source" | cut -d"=" -f2 | cut -f2)
@@ -56,9 +56,9 @@ do
 	esac
 
 	if $DEBUG; then
-                echo "Config lines:"
-                echo " > from:	$start_line"
-                echo " > to:		$stop_line"
+		echo "Config lines:"
+		echo " > from:	$start_line"
+		echo " > to:		$stop_line"
 		echo "options:	$options"
 		echo "source:		$source_dir"
 		echo " > removable:	$s_removable"
@@ -82,7 +82,7 @@ do
 	
 	# syncing
 	if [ $valid == "true" ]; then
-		rsync "$options" "$source_dir" "$destination"
+		rsync $options $source_dir "$destination"
 		ec=$?
 	fi
 	$DEBUG && echo "valid: $valid ret: $ec"
