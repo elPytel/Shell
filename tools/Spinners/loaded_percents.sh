@@ -87,11 +87,11 @@ validPercent || exit 3;
 
 # construct bar
 ret+="["
-for (( i=0; i<=$split-1; i++ )); do
+for (( i=0; i<$split; i++ )); do
 	ret+="="
 done
 ret+=">"
-for (( i=$split; i<=$bar_length; i++ )); do
+for (( i=$split; i<$bar_length; i++ )); do
     ret+=" "
 done
 ret+="]"

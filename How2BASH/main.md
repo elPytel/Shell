@@ -65,11 +65,17 @@ Využitím příkazu `seq`.
 
 Seq je pokročilejší.
 
-Použití cyklu for:
+Použití cyklu for each:
 ```
 for <promená> in <výčet>
 do
 	<příkazy>
+done
+```
+Cyklus "C-style for":
+```
+for (( initializer; condition; step )); do
+  shell_COMMANDS
 done
 ```
 
