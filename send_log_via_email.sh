@@ -19,7 +19,7 @@ path=$(dirname "$0")         # adresa k tomuto skriptu
 source "$path"/tools/colors.sh
 
 config=".email.conf"
-subject="Logs $(date | cut -d"," -f1)"			# datum a nazev
+subject="Logs: $(date | cut -d"," -f1)"			# datum a nazev
 $DEBUG && echo "Subject: $subject"
 
 # odeslani e-mailem
@@ -36,7 +36,7 @@ $DEBUG && echo "Files: $files"
 email=$(cat "$path"/$config | grep "e-mail=" | cut -d"=" -f2)
 echo -e "${Green}Sending to email:${NC} $email"
 #mail -s "$subject" -A ~/.my.log -A ~/.backup.log -A ~/.startup.log $email < /dev/null; ec=$?
-mail -s "$subject" "$files" "$email" < /dev/null; ec=$?
+mail -s "$subject" $files "$email" < /dev/null; ec=$?
 #ec=0
 case $ec in
 	0) echo "E-mail: $subject, sent OK.";;
