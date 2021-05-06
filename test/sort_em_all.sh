@@ -46,27 +46,43 @@ while [ $# -gt 0 ] ; do
 done
 
 for record in "$records"; do
-	fromFolder=$(echo $record | cut -d":" -f1)
-	toFolder=$(echo $record | cut -d":" -f2)
-	matchExtensionis=$(echo $record | cut -d":" -f3)
+	eval fromFolder=$(echo $record | cut -d":" -f1)
+	eval toFolder=$(echo $record | cut -d":" -f2)
+	matchExtensions=$(echo $record | cut -d":" -f3)
 	if $DEBUG; then
 		echo "Record: $record"
-		echo "$matchExtensionis"
+		echo "From folder: $fromFolder"
+		echo "To folder: $toFolder"
+		echo "Extensions: $matchExtensions"
 	fi
 
 	# test folders if exist!!!
+	if [ ! -d $fromFolder ]; then
+		$VERBOSE && echo "ERROR: $fromFolder do not exist!"
+		exit 1
+	fi
+	if [ ! -d $toFolder ]; then
+        $VERBOSE && echo "ERROR: $toFolder do not exist!"
+		exit 1
+    fi
 
-	for file in $(ls $fromFolder); do
+	# vyresit soubory s mezery
+	for matchExtension in $matchExtensions; do
+		ls $fromFolder | grep "**.$matchExtension" 
+	done
+
+	exit
+	for file in $fromFolder/*; do
 		filename=$(basename -- "$file")
 		extension="${filename##*.}"
 		if $DEBUG; then
-			#echo "File: $filename"
+			echo -n "File: $filename, "
 			echo "Etension: $extension"
-			echo "$(echo "$matchExtensionis" | tr " " "\n" | grep "$extension" -c)"
+			echo "$(echo "$matchExtensions" | tr " " "\n" | grep "$extension" -c)"
 		fi
 		
-		if [ $(echo "$matchExtensionis" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
-			mv "$file" "$toFolder"
+		if [ $(echo "$matchExtensions" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
+			#mv "$file" "$toFolder"
 			$VERBOSE && echo "File: $file, from: $fromFolder, moved to: $toFolder"
 		fi
 	done
