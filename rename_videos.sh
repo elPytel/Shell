@@ -14,7 +14,7 @@ function printHelp () {
 	echo -e "COMMANDS:"
 	echo -e "  -h, --help \t\t print this text"
 	echo -e "  -d, --debug\t\t enable debug output"
-	echo -e "  -v, --verbose\t increase verbosity"
+	echo -e "  -v, --verbose\t\t increase verbosity"
 	echo -e "  -f, --folder\t\t set folder with videos"
 	echo -e "  -S, --no-spaces\t remove spaces from name"
 }
@@ -50,13 +50,18 @@ if [ ! -d $folder ]; then
 	exit 1
 fi
 
+# proces
 for file in $folder/*; do
 	fileName=$(basename -- "$file")
 	if [ $(echo $fileName | grep $patern -c) -eq 1 ]; then
 		newName=${fileName#"$patern"}
+		
+		# remove spaces
 		if $noSpaces; then
 			newName=$(echo "$newName" | tr " " "_")
 		fi
+
+		# rename
 		mv "$file" "$folder/$newName"
 		$VERBOSE && echo "File $fileName renamed to: $newName"
 	fi

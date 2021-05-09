@@ -38,7 +38,7 @@ fi
 
 # zadal validni argumenty?
 case $# in
-	0) prinHelp; exit 2;;
+	0) printHelp; exit 2;;
 	1) arg=$1;;
 	2) # zadan vyber profilu
 		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l) -eq 1 ]; then
@@ -48,7 +48,7 @@ case $# in
         ;;
 	*) 
 		echo -e "${Red}Invalid options:${NC} $@"
-	        exit 1
+			exit 1
 		;;
 esac
 
@@ -60,8 +60,14 @@ case $arg in
 		case $(echo "$PROFILES" | wc -w) in
 			1) # profil je jiz zvolen
 				# najiti intervalu
-				start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "#" | grep "$PROFILES" | cut -f1 | tr -d " ")
-				stop_line=$(cat -n "$path"/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+				start_line=$(cat -n "$path"/$config | tail -n $(($len-1)) | grep "#" | grep $PROFILES | cut -f1 | tr -d " ")
+				stop_line=$(cat -n "$path"/$config | tail -n $(($len-$start_line)) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+				
+				if $DEBUG; then
+					echo ":${PROFILES}:"
+					echo $start_line
+					echo $stop_line
+				fi
 
 				# parse
 				profile=$PROFILES
@@ -74,7 +80,7 @@ case $arg in
 					password=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" | cut -d"=" -f2)
 				else
 					echo -en "${Green}Type your password: ${NC}"    
-                			read -s password
+					read -s password
 				fi
 				;;
 			*) # profil zatím není zvolen
@@ -93,7 +99,8 @@ case $arg in
 		esac 
 		
 		line=$profile'\n\n'$password
-		printf "%s" "$line" | $vpn_tool -s connect "$host"
+		#printf "%s" "$line" | $vpn_tool -s connect "$host"
+		printf "$line" | $vpn_tool -s connect "$host"
 	;;
 	"-d" | "--disconnect")
 		# odpoji se od vpn
