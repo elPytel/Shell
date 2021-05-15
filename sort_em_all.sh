@@ -8,6 +8,9 @@ DEBUG=false
 VERBOSE=false
 
 function printHelp () {
+	echo -e "USE:"
+    echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND"
+    echo ""
 	echo -e "COMMANDS:"
 	echo -e "  -h, --help \t print this text"
 	echo -e "  -d, --debug\t enable debug output"
@@ -15,7 +18,7 @@ function printHelp () {
 }
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-#user=$(. "$BASEDIR"/tools/get_curent_user.sh)
+user=$(. "$BASEDIR"/tools/get_curent_user.sh)
 path="/home/$user/Shell"        # cesta k skriptum
 $DEBUG && echo "path: $BASEDIR"
 
@@ -25,7 +28,7 @@ $DEBUG && echo "path: $BASEDIR"
 config=".sort.conf"
 #cat $config
 
-records=$(grep -v "#" $config | grep ":")
+records=$(grep -v "#" $path/$config | grep ":")
 
 # parse input
 arg=$1
@@ -84,7 +87,7 @@ for record in $records; do
 		fi
 		
 		if [ $(echo "$matchExtensions" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
-			#mv "$file" "$toFolder"
+			mv "$file" "$toFolder"
 			$VERBOSE && echo "File: $fileName, from: $fromFolder, moved to: $toFolder"
 		fi
 	done
@@ -93,7 +96,3 @@ done
 
 exit 0
 # END
-    for matchExtension in $matchExtensions; do
-        ls $fromFolder | grep "**.$matchExtension"
-    done
-

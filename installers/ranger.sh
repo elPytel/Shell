@@ -44,7 +44,7 @@ fi
 
 # instalace
 echo -e "${GREEN}Installing ranger: ${NC}"
-apt install ranger
+apt install ranger -y
 echo "Done"
 
 # konfigurace
