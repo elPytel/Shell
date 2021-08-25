@@ -17,7 +17,7 @@ then
 fi
 
 # colors
-source /home/$user/Shell/colors.sh
+source /home/$user/Shell/tools/colors.sh
 
 plugin="ranger_devicons"
 path="/home/$user/.config/ranger/plugins"
