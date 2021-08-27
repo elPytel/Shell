@@ -13,7 +13,7 @@ NC='\033[0m'    # No Color
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
-user=$(. $BASEDIR/get_curent_user.sh)
+user=$(. $BASEDIR/../tools/get_curent_user.sh)
 if [ $? != 0 ]; then
 	$DEBUG &&  echo $user
 	echo -e "${RED}Unable to parse user!${NC}"
@@ -23,7 +23,7 @@ fi
 path="/home/$user/"
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 app="bat"
 # instalace
