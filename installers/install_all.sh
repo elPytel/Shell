@@ -72,6 +72,7 @@ apt install vim -y
 apt install terminator -y
 apt install odt2txt -y	# open dokument to txt
 apt install aptitude -y # package manager
+apt install grsync -y	# grafical rsync
 
 #apt install w3m	# WWW browsable pager with excellent tables/frames support
 #apt install feh 	# feh is an X11 image viewer aimed mostly at console users
