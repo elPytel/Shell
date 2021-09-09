@@ -5,7 +5,7 @@
 #DEBUG=true
 DEBUG=false
 
-# funtions
+# functions
 
 function printHelp () {
 	echo -e "USE:"
@@ -18,13 +18,14 @@ function printHelp () {
 	echo -e "  -d --down\t switch off network interface"
 	echo -e "  -u --up\t switch on network interface"
 	echo -e "  -m --mode\t set mode: <>"
+	echo -e "  -s --status\t return status on/off"
 	echo -e "  -i --interface set interface: <>"
 	echo -e "  -t --test\t test interface for mods"
 	echo -e "  -l --list\t list modes"
 }
 
 function listModes () {
-        echo -e "MODES:"
+	echo -e "MODES:"
 	echo -e " $modes"
 }
 
@@ -32,21 +33,37 @@ function loadIntefaces () {
 	echo "$(hwinfo --network --short | grep -v ":" | tr -s " " | cut -d " " -f 2)"
 }
 
+function isInterfaceOn () { #( interface )
+	# not one argument
+        if [ $# -ne 1 ]; then
+                $VERBOSE && echo -e "ERROR: ${NC}interface not specified!"
+                return 1
+        fi
+	local interface=$1
+	local isOff=$(iwconfig 2>/dev/null | grep "$interface" | grep "off" -c)
+	if [ $isOff -eq 0 ]; then
+		echo "on"
+	else
+		echo "off"
+	fi
+	return 0
+}
+
 function setInterface () { #( interface )
         # not one argument
 	if [ $# -ne 1 ]; then
-		$VERBOSE && echo -e "ERROR: interface not specified!"
+		$VERBOSE && echo -e "ERROR: ${NC}interface not specified!"
 		return 1
 	fi
 	# empty argument
 	if [ -z "$1" ]; then
-		$VERBOSE && echo -e "ERROR: empty interface!"
+		$VERBOSE && echo -e "ERROR: ${NC}empty interface!"
 		return 2
 	fi
 	interface=$1	# global!!
 	# not from existing interfaces
 	if [ $(echo "$interfaces" | grep -x "$interface" -c) -ne 1 ]; then 
-		$VERBOSE && echo -e "ERROR: invalid interface!"
+		$VERBOSE && echo -e "ERROR: ${NC}invalid interface!"
 		return 3
 	fi
 	$DEBUG && echo -e "Interface set: $interface"
@@ -55,51 +72,74 @@ function setInterface () { #( interface )
 
 function setInterfaceDown () { #( interface )
 	if [ $# -ne 1 ]; then
-        	$VERBOSE && echo "ERROR: invalid args: [$*]"
+        	$VERBOSE && echo "ERROR: ${NC}invalid args: [$*]"
 		return 1
 	fi
 	# empty argument
         if [ -z "$1" ]; then
-                $VERBOSE && echo -e "ERROR: empty interface!"
+                $VERBOSE && echo -e "ERROR: ${NC}empty interface!"
                 return 2
         fi
 	local interface=$1
 	ip link set dev $interface down
-	return $?
+	local ret=$?
+	if [ $ret ]; then
+		$VERBOSE && echo -e "Interface: $interface down"
+	else
+		$VERBOSE && echo -e "ERROR: ${NC}unable to switch interface: $interface down!"
+	fi
+	return $ret
 }
 
 function setInterfaceUp () { #( interface )
         if [ $# -ne 1 ]; then
-		$VERBOSE && echo "ERROR: invalid args: [$*]"
+		echo "ERROR: ${NC}invalid args: [$*]" 1>&2
                 return 1
         fi
 	# empty argument
         if [ -z "$1" ]; then
-                $VERBOSE && echo -e "ERROR: empty interface!"
+                echo -e "ERROR: ${NC}empty interface!" 1>&2
                 return 2
         fi
         local interface=$1
         ip link set dev $interface up
-	return $?
+	local ret=$?
+	if [ $ret ]; then
+		$VERBOSE && echo -e "Interface: $interface up"
+	else
+		$VERBOSE && echo -e "ERROR: ${NC}unable to switch interface: $interface up!"
+	fi
+	return $ret
 }
 
 function setInterfaceMode () { #( interface mode )
 	if [ $# -ne 2 ]; then
-		$VERBOSE && echo "ERROR: invalid args: [$*]"
+		echo "ERROR: ${NC}invalid args: [$*]" 1>&2
 		return 1
 	fi
 	# empty argument
         if [ -z "$1" ]; then
-                $VERBOSE && echo -e "ERROR: empty interface!"
+                echo -e "${RED}ERROR: ${NC}empty interface!" 1>&2
                 return 2
         fi
 	local interface=$1
 	local mode=$2
 	if [ $(echo "$modes" | grep "$mode" -c) -ne 1 ]; then
+		echo -e "${RED}ERROR: ${NC}invalid mode: $interface${NC}! ${NC}" 1>&2
 		return 3
 	fi
-	iwconfig $interface mode $mode
+	setInterfaceDown $interface	# turn NIC off
+	$VERBOSE && echo -e "Interface: $interface down"
+	iwconfig $interface mode $mode	# change mode
 	local ret=$?
+	if [ $ret ]; then
+                $VERBOSE && echo -e "Interface: $interface${NC} mode: $mode${NC}"
+        else
+                $VERBOSE && echo -e "ERROR: ${NC}unable to switch mode to: $mode${NC}!"
+        fi
+	setInterfaceUp $interface	# turn NIC on
+	$VERBOSE && echo -e "Interface: $interface up"
+
 	return $ret
 }
 
@@ -115,7 +155,7 @@ if [ $(whoami) != "root" ]
 then
 	echo -e "${RED}I nead root privileges!${NC}"
 	exec sudo "$0" "$@"	# znovu zpusti sam sebe ale s pravy roota
-	echo "Error: failed to execute sudo" >&2
+	echo "Error: ${NC}failed to execute sudo" >&2
 	exit 1
 fi
 
@@ -142,6 +182,7 @@ while [ $# -gt 0 ] ; do
 		-u | --up)	setInterfaceUp "$interface" || exit 5;;
 		-m | --mode)	setInterfaceMode "$interface" || exit 6;;
 		-t | --test)	testInterface "$interface" || exit 7;;
+		-s | --status)	isInterfaceOn "$interface" || exit 8;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
 	esac
 
