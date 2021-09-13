@@ -9,8 +9,8 @@ VERBOSE=false
 
 function printHelp () {
 	echo -e "USE:"
-    echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND"
-    echo ""
+	echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND"
+	echo ""
 	echo -e "COMMANDS:"
 	echo -e "  -h, --help \t print this text"
 	echo -e "  -d, --debug\t enable debug output"
@@ -40,7 +40,7 @@ while [ $# -gt 0 ] ; do
 		-h | --help) 	printHelp; exit 2;;
 		-v | --verbose) VERBOSE=true;;
 		-d | --debug) DEBUG=true;;
-		*) echo -e "Unknown parametr: $arg"; exit 1;;
+		*) echo -e "Unknown parametr: $arg" 1>&2; exit 1;;
 	esac
 
 	# next arg
@@ -48,7 +48,7 @@ while [ $# -gt 0 ] ; do
 	arg=$1
 done
 
-for record in $records; do
+for record in "$records"; do
 	eval fromFolder=$(echo $record | cut -d":" -f1)
 	eval toFolder=$(echo $record | cut -d":" -f2)
 	matchExtensions=$(echo $record | cut -d":" -f3 | tr "," " ")
@@ -61,13 +61,13 @@ for record in $records; do
 
 	# do folders exist?
 	if [ ! -d $fromFolder ]; then
-		$VERBOSE && echo "ERROR: $fromFolder do not exist!"
+		$VERBOSE && echo "ERROR: $fromFolder do not exist!" 1>&2
 		exit 1
 	fi
 	if [ ! -d $toFolder ]; then
-        $VERBOSE && echo "ERROR: $toFolder do not exist!"
+		$VERBOSE && echo "ERROR: $toFolder do not exist!" 1>&2
 		exit 1
-    fi
+	fi
 
 	# vyresi soubory s mezery
 	#for file in $fromFolder/*; do

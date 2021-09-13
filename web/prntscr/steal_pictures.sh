@@ -19,6 +19,8 @@ function setStart () { #( index )
 }
 
 entry="100000"
+time="0.2"
+dir="imgs"
 
 # input args
 case $# in
@@ -26,6 +28,12 @@ case $# in
 	1) setStart $1 || exit 3;;
 	*) echo -e "Invalid parametr!"; exit 1;;
 esac
+
+# does directory exist?
+if [ ! -d "$dir" ]; then
+	mkdir imgs
+	$DEBUG && echo "Directory: $dir created."
+fi
 
 for i in {1..10}; do
 	$DEBUG && echo "Next: $entry"
@@ -43,7 +51,6 @@ for i in {1..10}; do
 	$DEBUG && echo "Format: $format"
 	
 	name="$entry.$format"
-	dir="imgs"
 	# download img
 	wget $imgLink -O $dir/$name --max-redirect=0
 	
@@ -55,7 +62,7 @@ for i in {1..10}; do
 	fi
 
 	entry=$(./next.sh $entry)
-	sleep 1	# sleep 1s
+	sleep $time
 done
 
 echo "Done"
