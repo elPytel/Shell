@@ -10,8 +10,10 @@ function printHelp () {
 	echo -e "  $(echo "$0" | tr "/" "\n" | tail -n 1) <path/file_name>"
 }
 
+BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+
 # colors
-source colors.sh
+source $BASEDIR/tools/colors.sh
 
 # zadal validni argumenty?
 case $# in

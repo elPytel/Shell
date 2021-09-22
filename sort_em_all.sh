@@ -48,7 +48,7 @@ while [ $# -gt 0 ] ; do
 	arg=$1
 done
 
-for record in "$records"; do
+for record in $records; do
 	eval fromFolder=$(echo $record | cut -d":" -f1)
 	eval toFolder=$(echo $record | cut -d":" -f2)
 	matchExtensions=$(echo $record | cut -d":" -f3 | tr "," " ")
@@ -82,8 +82,8 @@ for record in "$records"; do
 		extension="${fileName##*.}"
 		if $DEBUG; then
 			echo -n "File: $fileName, "
-			echo "Etension: $extension"
-			echo "$(echo "$matchExtensions" | tr " " "\n" | grep "$extension" -c)"
+			echo -n "Etension: $extension, "
+			echo "Match: $(echo "$matchExtensions" | tr " " "\n" | grep "$extension" -c)"
 		fi
 		
 		if [ $(echo "$matchExtensions" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
