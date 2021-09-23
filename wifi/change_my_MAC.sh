@@ -68,7 +68,7 @@ function setInterface () { #( interface )
 }
 
 function setMAC () { #( MAC ) 
-	local mac
+	local mac="$1"
 	if [ $(echo "$mac" | grep -o . | grep ":" -c) -ne 5 ]; then
 		$VERBOSE && echo -e "ERROR: ${NC}invalid MAC!"
 		return 3
@@ -89,7 +89,7 @@ random=false
 
 if [ $(whoami) != "root" ]
 then
-	echo -e "${RED}I nead root privileges!${NC}"
+	echo -e "${RED}I need root privileges!${NC}"
 	$DEBUG && echo "Running: sudo $0 $@"
 	exec sudo "$0" "$@"		# znovu zpusti sam sebe ale s pravy roota
 	echo "Error: failed to execute sudo" >&2
@@ -135,7 +135,7 @@ if $DEBUG; then
 fi
 
 # invalid interface
-if [ ! -z "$interface" ] && [ $(echo "$interfaces" | grep "$interface" -c) -ne 1 ]; then
+if [ -z "$interface" ] || [ $(echo "$interfaces" | grep "$interface" -c) -ne 1 ]; then
         echo -e "${RED}ERROR: ${NC}invalid interface!" 1>&2
         exit 3
 fi
@@ -148,14 +148,14 @@ if [ -z $MAC ]; then
 		partMAC=$(echo $line | cut -d " " -f 2)
 		# select the 6 other chars
 		for i in {1..3}; do
-			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-f' | fold -w 2 | head -n 1)
 			partMAC="$partMAC:$twoRndChar"
 		done
 	elif $random; then
 		# select TOTALY random MAC
-		partMAC=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+		partMAC=$(cat /dev/urandom | tr -dc '0-9a-f' | fold -w 2 | head -n 1)
 		for i in {1..5}; do
-			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-f' | fold -w 2 | head -n 1)
 			partMAC="$partMAC:$twoRndChar"
 		done
 	else
@@ -165,7 +165,7 @@ if [ -z $MAC ]; then
 		partMAC=$(echo $line | cut -d " " -f 2)
 		# select the 6 other chars
 		for i in {1..3}; do
-			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-f' | fold -w 2 | head -n 1)
 			partMAC="$partMAC:$twoRndChar"
 		done
 		$VERBOSE && echo "Selected Vendor: $vendor"
@@ -178,7 +178,7 @@ oldMAC=$(ifconfig $interface | grep "ether" | tr -s " " | cut -d " " -f 3)
 
 # change MAC
 ifconfig $interface down && $VERBOSE && echo "Switching: DOWN"
-#ifconfig $interface hw ether $MAC && $VERBOSE && echo "Changing MAC ..."
+ifconfig $interface hw ether $MAC && $VERBOSE && echo "Changing MAC ..."
 ifconfig $interface up && $VERBOSE && echo "Switching: UP"
 
 newMAC=$(ifconfig $interface | grep "ether" | tr -s " " | cut -d " " -f 3)
@@ -191,4 +191,3 @@ fi
 $VERBOSE && echo "Done"
 exit 0
 # END
-

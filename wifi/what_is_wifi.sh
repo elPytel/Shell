@@ -6,6 +6,7 @@
 DEBUG=false
 
 #lshw -class network
+#cat /proc/net/wireless
 
 numberOfNICs=$(lshw -class network 2>/dev/null | grep "*" -c)
 $DEBUG && echo "NICs: $numberOfNICs"

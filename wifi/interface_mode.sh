@@ -18,7 +18,7 @@ function printHelp () {
 	echo -e "  -d --down\t switch off network interface"
 	echo -e "  -u --up\t switch on network interface"
 	echo -e "  -m --mode\t set mode: <>"
-	echo -e "  -s --status\t return status on/off"
+	echo -e "  -s --status\t return status: on/off mode"
 	echo -e "  -i --interface set interface: <>"
 	echo -e "  -t --test\t test interface for mods"
 	echo -e "  -l --list\t list modes"
@@ -40,12 +40,16 @@ function isInterfaceOn () { #( interface )
                 return 1
         fi
 	local interface=$1
-	local isOff=$(iwconfig 2>/dev/null | grep "$interface" | grep "off" -c)
+	# ip a show "$interface"
+	# iwconfig "$interface" 2>/dev/null | grep "$interface" | grep "off" -c
+	local isOff=$(ip a show "$interface" | grep "DOWN" -c)
+	local mode=$(iwconfig "$interface" 2>/dev/null | tr " " "\n" | grep "Mode:" | cut -d ":" -f 2)
 	if [ $isOff -eq 0 ]; then
-		echo "on"
+		echo -n "UP "
 	else
-		echo "off"
+		echo -n "DOWN "
 	fi
+	echo "$mode"
 	return 0
 }
 
@@ -125,11 +129,10 @@ function setInterfaceMode () { #( interface mode )
 	local interface=$1
 	local mode=$2
 	if [ $(echo "$modes" | grep "$mode" -c) -ne 1 ]; then
-		echo -e "${RED}ERROR: ${NC}invalid mode: $interface${NC}! ${NC}" 1>&2
+		echo -e "${RED}ERROR: ${NC}invalid mode: $mode${NC}! ${NC}" 1>&2
 		return 3
 	fi
 	setInterfaceDown $interface	# turn NIC off
-	$VERBOSE && echo -e "Interface: $interface down"
 	iwconfig $interface mode $mode	# change mode
 	local ret=$?
 	if [ $ret ]; then
@@ -138,9 +141,19 @@ function setInterfaceMode () { #( interface mode )
                 $VERBOSE && echo -e "ERROR: ${NC}unable to switch mode to: $mode${NC}!"
         fi
 	setInterfaceUp $interface	# turn NIC on
-	$VERBOSE && echo -e "Interface: $interface up"
-
+	
+	case $mode in 
+		monitor) service NetworkManager stop;;
+		managed) service NetworkManager start;;
+	esac
 	return $ret
+}
+
+# will return info for pc, not selected interface!
+function testInterface () {  #( interface )
+	# "Supported interface modes:"
+	# iw list | sed $'s/\t/ /g' | grep "*\|:"
+	echo "$(iw list | sed $'s/\t/ /g' | grep "*\|:" | tr "\n" "_" | tr -s " " | tr ":" "\n" | grep "Supported interface modes" -A1 | tail -n 1 | tr "_" "\n" | grep "*")"
 }
 
 # program
@@ -180,7 +193,7 @@ while [ $# -gt 0 ] ; do
 		-i | --interface) shift; setInterface $1 || exit 3;;
 		-d | --down)	setInterfaceDown "$interface" || exit 4;;
 		-u | --up)	setInterfaceUp "$interface" || exit 5;;
-		-m | --mode)	setInterfaceMode "$interface" || exit 6;;
+		-m | --mode)	shift; setInterfaceMode "$interface" $1 || exit 6;;
 		-t | --test)	testInterface "$interface" || exit 7;;
 		-s | --status)	isInterfaceOn "$interface" || exit 8;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
