@@ -19,12 +19,11 @@ function printHelp () {
 	echo -e "  -f --file \t load file"
 	echo -e "  -i --interface set interface: <>"
 	echo -e "  -m --MAC  \t set MAC address: <>"
-	echo -e "  -v --vendor\tset Vendor: <>"
-	echo -e "  -R --random\tmake random pic of Vendor"
+	echo -e "  -v --vendor\t set Vendor: <>"
+	echo -e "  -R --random\t make random pic of MAC"
 }
 
 function listVendors () {
-	echo "Vendors: "
 	cat $file | grep "#" | tr " " "\n" | grep "#" -v
 }
 
@@ -86,6 +85,7 @@ interface=""
 interfaces="$(listInterfaces)"
 file="Vendors_MAC.txt"
 vendor=""
+random=false
 
 if [ $(whoami) != "root" ]
 then
@@ -128,7 +128,10 @@ done
 
 if $DEBUG; then
 	echo "Interface: $interface"
+	echo "Vendor: $vendor"
 	echo "MAC: $MAC"
+	echo "File: $file"
+	echo -n "Random: "; $random && echo "True" || echo "False"
 fi
 
 # invalid interface
@@ -137,11 +140,45 @@ if [ ! -z "$interface" ] && [ $(echo "$interfaces" | grep "$interface" -c) -ne 1
         exit 3
 fi
 
+# prepare MAC
+if [ -z $MAC ]; then
+	if [ ! -z "$vendor" ]; then
+		# pic one from list
+		line=$(cat Vendors_MAC.txt | grep "#" -v | grep "$vendor" | shuf -n 1)
+		partMAC=$(echo $line | cut -d " " -f 2)
+		# select the 6 other chars
+		for i in {1..3}; do
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			partMAC="$partMAC:$twoRndChar"
+		done
+	elif $random; then
+		# select TOTALY random MAC
+		partMAC=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+		for i in {1..5}; do
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			partMAC="$partMAC:$twoRndChar"
+		done
+	else
+		# select random vendor
+		line=$(cat Vendors_MAC.txt | grep "#" -v | shuf -n 1)
+		vendor=$(echo $line | cut -d " " -f 1)
+		partMAC=$(echo $line | cut -d " " -f 2)
+		# select the 6 other chars
+		for i in {1..3}; do
+			twoRndChar=$(cat /dev/urandom | tr -dc '0-9a-z' | fold -w 2 | head -n 1)
+			partMAC="$partMAC:$twoRndChar"
+		done
+		$VERBOSE && echo "Selected Vendor: $vendor"
+	fi
+	MAC=$partMAC
+	$VERBOSE && echo "New generated MAC: $MAC"
+fi
+
 oldMAC=$(ifconfig $interface | grep "ether" | tr -s " " | cut -d " " -f 3)
 
 # change MAC
 ifconfig $interface down && $VERBOSE && echo "Switching: DOWN"
-ifconfig $interface hw ether $MAC && $VERBOSE && echo "Changing MAC ..."
+#ifconfig $interface hw ether $MAC && $VERBOSE && echo "Changing MAC ..."
 ifconfig $interface up && $VERBOSE && echo "Switching: UP"
 
 newMAC=$(ifconfig $interface | grep "ether" | tr -s " " | cut -d " " -f 3)
