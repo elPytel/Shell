@@ -5,6 +5,8 @@
 #DEBUG=true
 DEBUG=false
 
+VERBOSE=false
+
 # functions
 
 function printHelp () {
@@ -158,7 +160,6 @@ function testInterface () {  #( interface )
 
 # program
 
-VERBOSE=false
 wifi="wlp3s0"
 interface=""
 interfaces=$(loadIntefaces)
