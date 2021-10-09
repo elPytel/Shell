@@ -23,15 +23,15 @@ case $# in
 esac
 
 # existuje soubor?
-if [ ! -f $file ]; then
+if [ ! -f "$file" ]; then
 	echo -e "${Red}ERROR: ${NC}File: ${Blue}$file ${NC}does not exit!${NC}";
 	exit 3
 fi
 
 # nastavi soubor jako spusitelny
-chmod 755 $file 
+chmod 755 "$file"; ret=$? 
 
-if [ $? -eq 0 ]; then
+if [ $ret -eq 0 ]; then
 	echo Done
 	exit 0
 else

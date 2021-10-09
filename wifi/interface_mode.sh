@@ -46,7 +46,7 @@ function isInterfaceOn () { #( interface )
 	# iwconfig "$interface" 2>/dev/null | grep "$interface" | grep "off" -c
 	local isOff=$(ip a show "$interface" | grep "DOWN" -c)
 	local mode=$(iwconfig "$interface" 2>/dev/null | tr " " "\n" | grep "Mode:" | cut -d ":" -f 2)
-	if [ $isOff -eq 0 ]; then
+	if [ "$isOff" -eq 0 ]; then
 		echo -n "UP "
 	else
 		echo -n "DOWN "
@@ -87,7 +87,7 @@ function setInterfaceDown () { #( interface )
                 return 2
         fi
 	local interface=$1
-	ip link set dev $interface down
+	ip link set dev "$interface" down
 	local ret=$?
 	if [ $ret ]; then
 		$VERBOSE && echo -e "Interface: $interface down"
@@ -108,7 +108,7 @@ function setInterfaceUp () { #( interface )
                 return 2
         fi
         local interface=$1
-        ip link set dev $interface up
+        ip link set dev "$interface" up
 	local ret=$?
 	if [ $ret ]; then
 		$VERBOSE && echo -e "Interface: $interface up"
@@ -134,15 +134,15 @@ function setInterfaceMode () { #( interface mode )
 		echo -e "${RED}ERROR: ${NC}invalid mode: $mode${NC}! ${NC}" 1>&2
 		return 3
 	fi
-	setInterfaceDown $interface	# turn NIC off
-	iwconfig $interface mode $mode	# change mode
+	setInterfaceDown "$interface"		# turn NIC off
+	iwconfig "$interface" mode "$mode"	# change mode
 	local ret=$?
 	if [ $ret ]; then
                 $VERBOSE && echo -e "Interface: $interface${NC} mode: $mode${NC}"
         else
                 $VERBOSE && echo -e "ERROR: ${NC}unable to switch mode to: $mode${NC}!"
         fi
-	setInterfaceUp $interface	# turn NIC on
+	setInterfaceUp "$interface"	# turn NIC on
 	
 	case $mode in 
 		monitor) service NetworkManager stop;;
@@ -191,10 +191,10 @@ while [ $# -gt 0 ] ; do
 		-l | --list)	listModes; exit 2;;
 		-D | --debug)	DEBUG=true;;
 		-v | --verbose)	VERBOSE=true;;
-		-i | --interface) shift; setInterface $1 || exit 3;;
+		-i | --interface) shift; setInterface "$1" || exit 3;;
 		-d | --down)	setInterfaceDown "$interface" || exit 4;;
 		-u | --up)	setInterfaceUp "$interface" || exit 5;;
-		-m | --mode)	shift; setInterfaceMode "$interface" $1 || exit 6;;
+		-m | --mode)	shift; setInterfaceMode "$interface" "$1" || exit 6;;
 		-t | --test)	testInterface "$interface" || exit 7;;
 		-s | --status)	isInterfaceOn "$interface" || exit 8;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;

@@ -38,7 +38,7 @@ function isInt () { #( number )
 
 function setLen () { #( number )
 	local number=$1
-	isInt $number
+	isInt "$number"
 	if [ ! $? ]; then
 		echo "Error: ${NC}this: $number is not a number!" >&2
 		return 2
@@ -51,7 +51,7 @@ function setLen () { #( number )
 
 function setNumber () { #( number )
 	local number=$1
-	isInt $number
+	isInt "$number"
 	if [ ! $? ]; then
 		echo "Error: ${NC}this: $number is not a number!" >&2
 		return 2
@@ -62,14 +62,14 @@ function setNumber () { #( number )
 }
 
 function setMode () { #( mode )
-	local string=$(echo $1 | grep -o . | sort | uniq)
+	local string=$(echo i"$1" | grep -o . | sort | uniq)
 	local special='!@#$%^&*()-_+?><~;'
 
 	$DEBUG && echo "Mode to set: "
 
 	mode=""
 	for char in $string; do
-		$DEBUG && echo $char
+		$DEBUG && echo "$char"
 		case $char in 
 			a) mode=$mode'a-z';;
 			A) mode=$mode'A-Z';;
@@ -99,9 +99,9 @@ while [ $# -gt 0 ] ; do
 		-h | --help) 	printHelp; exit 2;;
 		-d | --debug)	DEBUG=true;;
 		-v | --verbose)	VERBOSE=true;;
-		-m | --mode)	shift; setMode $1 || exit 3;;
-		-l | --len)	shift; setLen $1 || exit 4;;
-		-n | --number)	shift; setNumber $1 || exit 5;
+		-m | --mode)	shift; setMode "$1" || exit 3;;
+		-l | --len)	shift; setLen "$1" || exit 4;;
+		-n | --number)	shift; setNumber "$1" || exit 5;
 	esac
 
 	# next arg

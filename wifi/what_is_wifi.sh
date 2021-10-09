@@ -36,7 +36,7 @@ done
 if [ -z "$wifis" ]; then
 	exit 1
 else
-	echo $wifis
+	echo "$wifis"
 	exit 0
 fi
 # END
