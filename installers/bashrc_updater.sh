@@ -6,9 +6,8 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 
 # find user name
 # $USERNAME - nefunguje na roota
-user=$(. $BASEDIR/get_curent_user.sh)
-if [ $? != 0 ]
-then
+user=$(. ../tools/get_curent_user.sh)
+if [ $? != 0 ]; then
         [ $DEBUG ] && echo $user
 	echo -e "${RED}Unable to parse user!${NC}"
         exit 2
@@ -18,8 +17,7 @@ path="/home/$user"
 
 # nastavi cestu .bashrc k .bash_environment
 env=.bash_environment
-if [ $(cat $path/.bashrc | grep $env | wc -l) -eq 0 ]
-then
+if [ $(cat $path/.bashrc | grep $env | wc -l) -eq 0 ]; then
         cat >> $path/.bashrc <<EOF
 
 # Environment definitions.

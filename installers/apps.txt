@@ -1,0 +1,25 @@
+# Apps for installation
+# Pytel
+
+terminator
+vlc
+gimp
+gparted
+aptitude
+
+# open dokument to txt
+odt2txt
+
+# package manager
+aptitude
+
+# grafical rsync
+grsync
+
+# Some more:
+#ubuntu-restricted-extras
+# Media Codecs
+#preload
+# Cache frequently used apps in RAM
+
+# END
