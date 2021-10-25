@@ -16,6 +16,62 @@ function printHelp () {
 	echo -e "  -s --state \t\t state of vpn connection"	
 }
 
+function setProfile () { #( arg profile )
+	if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l) -ne 1 ]; then
+		return 1
+	fi
+	arg=$1
+	PROFILES=$2
+	return 0
+}
+
+function connect () {
+	case $(echo "$PROFILES" | wc -w) in
+		1) # profil je jiz zvolen
+			# najiti intervalu
+			start_line=$(cat -n "$path"/$config | tail -n $(($len-1)) | grep "#" | grep $PROFILES | cut -f1 | tr -d " ")
+			stop_line=$(cat -n "$path"/$config | tail -n $(($len-$start_line)) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
+
+			if $DEBUG; then
+				echo ":${PROFILES}:"
+				echo $start_line
+				echo $stop_line
+			fi
+
+			# parse
+			profile=$PROFILES
+			host=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "host" | cut -d"=" -f2)
+			username=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "user" | cut -d"=" -f2)
+			echo -e "${Green}Connecting to: ${Blue}$host${NC}"
+			echo -e "${Green}As user: ${Blue}$username${NC}"
+
+			if [ $(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" -c) -eq 1 ]; then
+				password=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" | cut -d"=" -f2)
+			else
+				echo -en "${Green}Type your password: ${NC}"
+				read -s password
+			fi
+		;;
+		*) # profil zatím není zvolen
+			echo "Chose one number from: "
+			number=1
+			for PROFILE in $PROFILES; do
+				echo "  $number) $PROFILE"
+				number=$(( $number + 1 ))
+			done
+			read choice
+			profile=$(echo "$PROFILES" | tr " " "\n" | sed -n ${choice})
+			$DEBUG && echo "Profile: $profile"
+			# rekurzivni spusteni
+			bash "$0" -c "$profile"
+		;;
+	esac
+
+	line=$profile'\n\n'$password
+	#printf "%s" "$line" | $vpn_tool -s connect "$host"
+	printf "$line" | $vpn_tool -s connect "$host"
+}
+
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 path=$(dirname "$0")         # adresa k tomuto skriptu
 $DEBUG && echo "path: $path"
@@ -39,17 +95,9 @@ fi
 # zadal validni argumenty?
 case $# in
 	0) printHelp; exit 2;;
-	1) arg=$1;;
-	2) # zadan vyber profilu
-		if [ $(echo "$PROFILES" | tr " " "\n" | grep "$2" | wc -l) -eq 1 ]; then
-			arg=$1
-			PROFILES=$2
-		fi
-        ;;
-	*) 
-		echo -e "${Red}Invalid options:${NC} $@"
-			exit 1
-		;;
+	1) arg="$1";;
+	2) setProfile "$1" "$2" || exit 3;;
+	*) echo -e "${Red}Invalid options:${NC} $@"; exit 1;;
 esac
 
 $DEBUG && echo "vpns: $PROFILES"
@@ -57,50 +105,7 @@ $DEBUG && echo "vpns: $PROFILES"
 case $arg in
 	"-c" | "--connect")
 		# pripoji se pres vpn 
-		case $(echo "$PROFILES" | wc -w) in
-			1) # profil je jiz zvolen
-				# najiti intervalu
-				start_line=$(cat -n "$path"/$config | tail -n $(($len-1)) | grep "#" | grep $PROFILES | cut -f1 | tr -d " ")
-				stop_line=$(cat -n "$path"/$config | tail -n $(($len-$start_line)) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
-				
-				if $DEBUG; then
-					echo ":${PROFILES}:"
-					echo $start_line
-					echo $stop_line
-				fi
-
-				# parse
-				profile=$PROFILES
-				host=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "host" | cut -d"=" -f2)
-				username=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "user" | cut -d"=" -f2)
-				echo -e "${Green}Connecting to: ${Blue}$host${NC}"
-				echo -e "${Green}As user: ${Blue}$username${NC}"
-				
-				if [ $(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" -c) -eq 1 ]; then
-					password=$(sed -n "${start_line},${stop_line}p" "$path"/$config | grep "passwd" | cut -d"=" -f2)
-				else
-					echo -en "${Green}Type your password: ${NC}"    
-					read -s password
-				fi
-				;;
-			*) # profil zatím není zvolen
-				echo "Chose one number from: "
-				number=1
-				for PROFILE in $PROFILES; do
-					echo "  $number) $PROFILE"
-					number=$(( $number + 1 ))
-				done
-				read choice
-				profile=$(echo "$PROFILES" | tr " " "\n" | sed -n ${choice})
-				$DEBUG && echo "Profile: $profile"
-				# rekurzivni spusteni
-				bash "$0" -c "$profile"
-				;;
-		esac 
-		
-		line=$profile'\n\n'$password
-		#printf "%s" "$line" | $vpn_tool -s connect "$host"
-		printf "$line" | $vpn_tool -s connect "$host"
+		connect
 	;;
 	"-d" | "--disconnect")
 		# odpoji se od vpn
