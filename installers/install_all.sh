@@ -68,6 +68,9 @@ apt install vim -y
 # ShellCheck
 ./ShellCheck.sh
 
+# at
+./at.sh
+
 # dalsi
 #apt install w3m	# WWW browsable pager with excellent tables/frames support
 #apt install feh 	# feh is an X11 image viewer aimed mostly at console users

@@ -27,19 +27,19 @@ then
 	exit 1
 fi
 
-file="100-USB_connected_script.rules"
+file="50-USB_connected_script.rules"
 pathRules="/etc/udev/rules.d/"
 path="/home/$user/Shell"
 script="USB_connected.sh"
 
-if [ -d "$pathRules/$file" ]; then
+if [ -f "$pathRules/$file" ]; then
 	echo -e "${Red}Error${NC}: file already exist!" >&2
 	exit 3
 fi
 
 touch "$pathRules/$file"
 cat >> "$pathRules/$file" <<EOF
-ACTION=="add", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="****", ATTRS{idProduct}=="****", RUN+="$path/$script" 
+ACTION=="add", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="*", ATTRS{idProduct}=="*", RUN+="$path/$script '%E{DEVNAME}'" 
 EOF
 
 udevadm control --reload-rules
