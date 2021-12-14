@@ -119,6 +119,7 @@ fi
 
 # spin up time for drive
 sleep $sleepTime
+$VERBOSE && echo "$(date)"
 
 cat "$path/$config" | grep -v "#" | grep "$VendorID:$ProductID" | while read -r line ; do
 #for line in "$(cat "$path/$config" | grep -v "#" | grep "$VendorID:$ProductID")"; do
@@ -134,17 +135,17 @@ cat "$path/$config" | grep -v "#" | grep "$VendorID:$ProductID" | while read -r 
 	
 	# test dirs
 	valid=true
-	if [ "$(echo -n "$sourceDir" | tail -c 1)" = "/" ]; then
+	if [ "$(echo -n "$sourceDir" | tail -c 1)" != "*" ]; then
 		# dir
-		if [ ! -d $sourceDir ]; then
+		if [ ! -d "${sourceDir}" ]; then
 			echo -e "${Red}ERROR:${NC} invalid source dir!" 1>&2
 			valid=false
 			ret=2
 		fi
 	else
 		# files
-		if [ ! -d $(dirname $sourceDir | uniq)/ ]; then
-			echo -e "${Red}ERROR:${NC} invalid source dir!" 1>&2
+		if [ ! -d "$(dirname $sourceDir | uniq)/" ]; then
+			echo -e "${Red}ERROR:${NC} invalid source files!" 1>&2
 			valid=false
 			ret=2
 		fi
@@ -158,7 +159,12 @@ cat "$path/$config" | grep -v "#" | grep "$VendorID:$ProductID" | while read -r 
 
 	# syncing
 	if [ $valid == "true" ]; then
-		rsync $options $sourceDir "$destinationDir"
+		if [ $(echo "$sourceDir" | grep " " -c) -eq 1 ]; then
+			rsync $options "$sourceDir" "$destinationDir"
+		else
+			rsync $options $sourceDir "$destinationDir"
+		fi
+		#rsync $options "$sourceDir" "$destinationDir"
 		ec=$?
 	fi
 	$DEBUG && echo "valid: $valid ret: $ec"

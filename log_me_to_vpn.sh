@@ -13,7 +13,8 @@ function printHelp () {
 	echo -e "COMMANDS:"
 	echo -e "  -c --connect \t\t to connect to selected vpn"
 	echo -e "  -d --disconnect \t to disconnect from vpn"
-	echo -e "  -s --state \t\t state of vpn connection"	
+	echo -e "  -s --state \t\t state of vpn connection"
+	echo -e "  -g --gui \t\t run the gui for vpn"	
 }
 
 function setProfile () { #( arg profile )
@@ -73,6 +74,7 @@ function connect () {
 }
 
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
+vpn_gui="/opt/cisco/anyconnect/bin/vpnui"
 path=$(dirname "$0")         # adresa k tomuto skriptu
 $DEBUG && echo "path: $path"
 
@@ -114,6 +116,10 @@ case $arg in
 	"-s" | "--state")
 		# zjisti stav pripojeni
 		$vpn_tool -s state | grep "state" | uniq | cut -d":" -f2
+	;;
+	"-g" | "--gui")
+		# zapne gui aplikaci
+		$vpn_gui
 	;;
 	*) # Default condition
 		echo -e "${Red}Unknown parametr:${NC} $arg"

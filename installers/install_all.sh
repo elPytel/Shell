@@ -33,7 +33,7 @@ add-apt-repository ppa:danielrichter2007/grub-customizer
 apt install grub-customizer
 
 # Vim
-apt install vim -y
+./vim.sh
 
 # python
 ./python.sh

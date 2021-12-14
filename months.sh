@@ -6,7 +6,7 @@
 #DEBUG=false
 
 MONTH_CZ=(Leden Únor Březen Duben Květen Červen Červenec Srpen Září Říjen Listopad Prosinec)
-MONTH_EN=(January February March April May June July August September October Novembe December)
+MONTH_EN=(January February March April May June July August September October November December)
 
 echo -e "Číslo:\t měsíc:\t\t month:"
 for i in {0..11}; do

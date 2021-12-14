@@ -22,7 +22,7 @@ fi
 path="/home/$user"              # cesta k /home/user
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 # instalace
 app="wordgrinder"

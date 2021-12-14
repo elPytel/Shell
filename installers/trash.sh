@@ -11,7 +11,7 @@ user=$(. $BASEDIR/get_curent_user.sh)
 path="/home/$user"        	# cesta k /home/user
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 # nainstaluje
 echo -e "${Green}Installing trash: ${NC}"

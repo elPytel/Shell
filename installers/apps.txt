@@ -9,6 +9,8 @@ aptitude
 p7zip-full
 neofetch
 curl
+lm-sensors
+chrome-gnome-shell
 
 # open dokument to txt
 odt2txt

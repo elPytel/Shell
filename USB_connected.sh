@@ -31,7 +31,8 @@ if $DEBUG; then
 fi
 
 script="None"
-for entry in "$(cat "$path/Shell/$config" | grep -v "#" | grep "$ID")"; do
+cat "$path/Shell/$config" | grep -v "#" | grep "$ID" | while read -r entry ; do
+#for entry in "$(cat "$path/Shell/$config" | grep -v "#" | grep "$ID")"; do
 	if [ -z "$entry" ]; then break; fi;
 	script=$(echo "$entry" | cut -d":" -f3-)
 	if $DEBUG; then
