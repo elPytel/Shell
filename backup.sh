@@ -35,7 +35,7 @@ for BACKUP in $BACKUPS
 do
 	echo -e "${Green}Backup: ${Blue}$BACKUP${NC}"
 	# najiti intervalu
-	start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "# $BACKUP" | cut -f1 | tr -d " ")
+	start_line=$(cat -n "$path"/$config | tail -n $(( $len - 1 )) | grep "# $BACKUP" | head -n 1 | cut -f1 | tr -d " ")
 	stop_line=$(cat -n "$path"/$config | tail -n $(( $len - $start_line )) | grep "#" | tr "\n" " " | cut -f1 | tr -d " ")
 
 	# parse
