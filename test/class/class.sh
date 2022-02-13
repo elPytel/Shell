@@ -1,7 +1,5 @@
+#!/bin/bash
 # By Pytel
-
-DEBUG=true
-#DEBUG=false
 
 indir_keys() {
     eval "echo \${!$1[@]}"
@@ -44,21 +42,5 @@ function new () { # ( class )
 		object["$atribut"]="${class[$atribut]}"; 
 	done
 }
-
-declare -A classA
-
-classA=( ["text"]="Ahoj!" ["print"]="echo " )
-string=$(get classA text)
-
-rfn classA print $string
-rfn classA print $string " všichni!"
-
-rof classA.print\("Hola"\)
-rof classA.print\( $string \)
-
-echo ${!classA[@]}
-declare -A instance
-new instance classA
-echo ${!instance[@]}
 
 # END
