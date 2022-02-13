@@ -35,11 +35,10 @@ function rfn () { # ( instance func atributs )
 }
 
 # run object function
-function rof () { # ( instance.func(atributs, ...) )
-	local args=$@
-	local object=$(echo $args | cut -d "." -f1)
-	local fun=$(echo $args | cut -d "." -f2 | cut -d "(" -f1)
-	local arg=$(echo $args | cut -d "." -f2 | cut -d "(" -f2 | tr -d ")" | tr -d ",")
+function rof () { # ( instance.func "atributs ..." )
+	local object=$(echo $1 | cut -d "." -f1)
+	local fun=$(echo $1 | cut -d "." -f2 ); shift
+	local arg=$(echo $@ )
 	echo $(eval $(get $object.$fun) $arg)
 }
 
@@ -62,12 +61,9 @@ function extend () { # ( object class )
 # generic contructor
 function new () { # ( object = class )
 	local args=$(echo $@ | tr -d " " )
-	declare -n object=$(echo $args | cut -d "=" -f 1)
-    declare -n class=$(echo $args | cut -d "=" -f 2)
-
-    for atribut in "${!class[@]}"; do
-        object["$atribut"]="${class[$atribut]}";
-    done
+	local object=$(echo $args | cut -d "=" -f 1)
+	local class=$(echo $args | cut -d "=" -f 2)
+	copy $object $class
 }
 
 function delete () { # ( object ) 
