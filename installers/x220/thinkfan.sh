@@ -38,6 +38,7 @@ then
 fi
 
 apps="lm-sensors thinkfan"
+# sudo sensors-detect
 
 # instalation
 for app in $apps; do
@@ -61,9 +62,46 @@ done
 
 $VERBOSE && echo -e "Instalation: Done"
 
-$VERBOSE && echo -e "Enabling: fan_control."
+$VERBOSE && echo -e "Enabling: fan_control"
 echo "options thinkpad_acpi fan_control=1" >> /etc/modprobe.d/thinkpad_acpi.conf
-# modprobe thinkpad_acpi
+modprobe thinkpad_acpi
+
+echo 'THINKFAN_ARGS="-c /etc/thinkfan.conf"' >> /etc/default/thinkfan
+echo 'START=yes' >> /etc/default/thinkfan
+
+config="/etc/thinkfan.conf"
+cat > $config <<EOF
+######################################################################
+#
+# IBM/Lenovo Thinkpads (thinkpad_acpi, /proc/acpi/ibm)
+# ====================================================
+#  Syntax:
+#  (LEVEL, LOW, HIGH)
+#  LEVEL is the fan level to use (0-7 with thinkpad_acpi)
+#  LOW is the temperature at which to step down to the previous level
+#  HIGH is the temperature at which to step up to the next level
+#  All numbers are integers.
+
+tp_fan /proc/acpi/ibm/fan
+EOF
+
+find /sys/devices -type f -name "temp*_input"|sed 's/^/hwmon /g' >> $config
+
+cat >> $config <<EOF
+
+(0,	0,	60)
+(1,	60,	65)
+(2,	65,	70)
+(3,	70,	75)
+(4,	75,	80)
+(5,	80,	85)
+(7,	85,	90)
+(127, 90, 32767)
+
+# END
+EOF
+
+systemctl enable thinkfan
 
 $VERBOSE && echo -e "All: Done"
 
