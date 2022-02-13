@@ -14,6 +14,14 @@ function get () { # ( instance atribut )
     eval "echo \${$1[$2]}"
 }
 
+# set atribut
+function sat () { # ( instance atribut value )
+	declare -n object=$1; shift
+	local atribut=$1; shift
+	local arg=$@
+	object["$atribut"]="$arg"
+}
+
 # run function
 function rfn () { # ( instance func atributs )
 	#echo $(eval $(get $1 $2) $3)
@@ -33,14 +41,34 @@ function rof () { # ( instance.func(atributs, ...) )
 }
 
 
-# generic contructor
-function new () { # ( class )
+# copy class
+function copy () { # ( object class )
 	declare -n object=$1
 	declare -n class=$2
 
 	for atribut in "${!class[@]}"; do 
 		object["$atribut"]="${class[$atribut]}"; 
 	done
+}
+
+# exnteds class
+function extend () { # ( object class )
+	copy $@
+}
+
+# generic contructor
+function new () { # ( object = class )
+	local args=$(echo $@ | tr -d " " )
+	declare -n object=$(echo $args | cut -d "=" -f 1)
+    declare -n class=$(echo $args | cut -d "=" -f 2)
+
+    for atribut in "${!class[@]}"; do
+        object["$atribut"]="${class[$atribut]}";
+    done
+}
+
+function delete () { # ( object ) 
+	unset $1
 }
 
 # END
