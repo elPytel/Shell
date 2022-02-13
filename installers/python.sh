@@ -35,6 +35,25 @@ fi
 # aktulizace
 python3 -m pip install --upgrade pip
 
+# pytest
+pip install -U pytest
+
+# nastavi environment
+# odstrani puvodni PATH pro .local/bin
+sed -i '/.local\/bin/d' $path/.bash_environment
+
+# nastavi PATH pro 
+cat >> $path/.bash_environment <<EOF
+
+# set PATH so it includes user's private .local/bin sripts if it exists
+if [ -d "\$HOME/.local/bin" ] ; then
+	PATH="\$HOME/.local/bin:\$PATH"
+fi #.local/bin
+EOF
+
+echo "Done"
+
+
 echo "Done"
 
 exit 0
