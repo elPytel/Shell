@@ -1,0 +1,10 @@
+Since Bash 4.3, declare has a flag -n to define references (this is loosely equivalent to references in C++). This flag tremendously simplifies your problem here:
+
+fullname() {
+    declare -nl pointer="$1"
+    for i in "${!pointer[@]}"
+    do
+        echo "${pointer[$i]} $i"
+    done
+}
+It will be safe if you're having spaces or funny symbols in the keys of your hash (unlike the accepted answer).

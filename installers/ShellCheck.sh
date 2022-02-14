@@ -20,10 +20,10 @@ if [ $? != 0 ]; then
 	exit 2
 fi
 
-path="/home/$user/"
+path="/home/$user"
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 app="shellcheck"
 # instalce
@@ -37,13 +37,13 @@ fi
 
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"
-[ ! -f $path.bash_aliases ] && touch $path.bash_aliases
+[ ! -f $path/.bash_aliases ] && touch $path/.bash_aliases
 
 # odstrani puvodni aliasy pro bat
-sed -i '/shellcheck/d' $path.bash_aliases
+sed -i '/shellcheck/d' $path/.bash_aliases
 
 # nastavi nove aliasy pro bat
-cat >> $path.bash_aliases <<EOF
+cat >> $path/.bash_aliases <<EOF
 
 # some shellcheck aliases:
 alias sc='shellcheck'

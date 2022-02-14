@@ -1,0 +1,5 @@
+apt install -y tlp
+apt-get install -y tp-smapi-dkms
+apt-get install -y acpi-call
+
+tlp-stat -b

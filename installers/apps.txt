@@ -6,6 +6,11 @@ vlc
 gimp
 gparted
 aptitude
+p7zip-full
+neofetch
+curl
+lm-sensors
+chrome-gnome-shell
 
 # open dokument to txt
 odt2txt
@@ -16,9 +21,11 @@ aptitude
 # grafical rsync
 grsync
 
-# Some more:
+## Some more:
+
 #ubuntu-restricted-extras
 # Media Codecs
+
 #preload
 # Cache frequently used apps in RAM
 

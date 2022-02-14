@@ -19,6 +19,9 @@ fi
 # aktualizace
 . ../updater.sh -y
 
+# dalsi
+./check_and_install_packages.sh apps.txt
+
 # instalace snap
 apt install snapd -y
 
@@ -29,11 +32,8 @@ snap install tpad
 add-apt-repository ppa:danielrichter2007/grub-customizer
 apt install grub-customizer
 
-# curl
-apt install curl -y
-
 # Vim
-apt install vim -y
+./vim.sh
 
 # python
 ./python.sh
@@ -68,9 +68,10 @@ apt install vim -y
 # ShellCheck
 ./ShellCheck.sh
 
-# dalsi
-./check_and_install_packages.sh apps.txt
+# at
+./at.sh
 
+# dalsi
 #apt install w3m	# WWW browsable pager with excellent tables/frames support
 #apt install feh 	# feh is an X11 image viewer aimed mostly at console users
 
