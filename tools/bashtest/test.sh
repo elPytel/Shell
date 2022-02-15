@@ -39,10 +39,10 @@ function print_function_and_error_line () { # ( file function errno )
 	code=$(sed -n ${start},${end}p $file)
 	faigled_line=$(echo -e "$code" | grep -n "return $errno" | cut -d ":" -f1)
 
-	echo -e "==== FAILURE ====\n"
+	echo -e "${Red}=== FAILURE ===${NC}\n"
 	echo "$code" | sed 's/^/\t/' | sed "${faigled_line}s/^/>/" 
 	
-	echo -e "\nERROR in: $file on line: $(( $start + $faigled_line - 1 ))."
+	echo -e "\n${Red}ERROR${NC} in: ${Blue}$file${NC} on line: $(( $start + $faigled_line - 1 ))."
 }
 
 function test_function () { # ( file function )
@@ -75,8 +75,8 @@ function test_file () { # ( file )
 	source $file
 
 	local progres=""
-	local pass="."
-	local fail="F"
+	local pass="${Green}.${NC}"
+	local fail="${Red}F${NC}"
 
 	$DEBUG && echo -e "All func: $functions"
 	for function in $functions; do
@@ -107,6 +107,9 @@ function test_file () { # ( file )
 # kdyz funkce chybuje, tak vypisuji do konzole jeji kod
 # zvyrazneni radku, ktery navraci danou chybovou hodnotu
 
+# colors
+source ../colors.sh
+
 passed=0
 faigled=0
 files=""
@@ -135,11 +138,11 @@ if [ -z $files ]; then
 	files=$(ls $pwd | tr " " "\n" | grep ".sh" | grep "test_")
 fi
 
-echo -e "=== test session starts ==="
+echo -e "${Green}=== test session starts ===${NC}"
 echo -e "rootdir: $(pwd)"
 
 for file in $files; do
-	echo -e "File: $file"
+	echo -e "File: ${Blue}$file${NC}"
 	# do file exist?
 	if [ ! -f $file ]; then
 		$VERBOSE && echo "ERROR: $file do not exist!"
@@ -148,7 +151,7 @@ for file in $files; do
 	test_file $file
 done
 
-echo -e "=== $passed passed, $faigled failed ==="
+echo -e "=== ${Green}$passed passed${NC}, ${Red}$faigled failed${NC} ==="
 
 $VERBOSE && echo -e "Done"
 exit 0
