@@ -52,10 +52,16 @@ function test_function () { # ( file function )
 	output=$(run_function $function)
 	errno=$?
 	
-	$VERBOSE && echo -e "$output"
-
 	if [ $errno -ne 0 ]; then
 		print_function_and_error_line $file $function $errno
+	fi
+	
+	if $VERBOSE; then
+		echo -e "\nFunction output:"
+		echo -e "$output"
+	fi
+
+	if [ $errno -ne 0 ]; then
 		return 1
 	fi
 	return 0
@@ -80,7 +86,7 @@ function test_file () { # ( file )
 
 	$DEBUG && echo -e "All func: $functions"
 	for function in $functions; do
-		$DEBUG && echo -e "Function: $function"
+		$DEBUG && echo -e "\nFunction: ${Blue}$function${NC}"
 		test_function $file $function
 		ret=$?
 		if [ $ret -eq 0 ]; then
@@ -139,7 +145,7 @@ if [ -z $files ]; then
 fi
 
 echo -e "${Green}=== test session starts ===${NC}"
-echo -e "rootdir: $(pwd)"
+echo -e "rootdir: ${Blue}$(pwd)${NC}"
 
 for file in $files; do
 	echo -e "File: ${Blue}$file${NC}"
