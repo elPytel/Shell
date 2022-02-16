@@ -1,7 +1,7 @@
 #!/bin/bash
 # By Pytel
 
-source ./class_v3.sh
+source ./class.sh
 
 #DEBUG=true
 DEBUG=false

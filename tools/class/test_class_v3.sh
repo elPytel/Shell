@@ -1,7 +1,7 @@
 #!/bin/bash
 # By Pytel
 
-source ./class_v3.sh
+source ./class.sh
 
 DEBUG=true
 #DEBUG=false
@@ -42,9 +42,18 @@ new instance = myClass
 echo -e "\nAtributs:"
 indir_keys myClass
 
-echo -e "\nGet:"
-get instance.text
-get instance.print
+function test_get () {
+	echo -e "\nGet:"
+	if [ "$(get instance.text)" != "Ahoj!" ]; then
+		echo "$(get instance.text)"
+		return 1
+	elif [ "$(get instance.print)" != "echo \$@" ]; then
+		echo "$(get instance.print)"
+		return 2
+	fi
+	return 0
+}
+
 get instance.n_times_repeat
 
 echo -e "\nFunction:"
@@ -55,7 +64,9 @@ rof instance.n_times_repeat 5 "tohle je argument"
 rof instance.repeat
 rof instance.fun
 
-echo -e "\nDelete:"
-delete instance
+function test_delete () {
+	echo -e "\nDelete:"
+	delete instance
+}
 
 # END
