@@ -144,8 +144,10 @@ if [ -z $files ]; then
 	files=$(ls $pwd | tr " " "\n" | grep ".sh" | grep "test_")
 fi
 
+number=$(echo $files | tr " " "\n" | wc -l)
 echo -e "${Green}=== test session starts ===${NC}"
 echo -e "rootdir: ${Blue}$(pwd)${NC}"
+echo -e "collected: ${Blue}$number${NC} files"
 
 for file in $files; do
 	echo -e "File: ${Blue}$file${NC}"

@@ -22,7 +22,14 @@ myClass=(
 	["fun"]='
 		echo "hi"
 		'
+	["repeat"]='
+		range=$(get $this.text | wc -c);
+		for i in $(seq 1 $range); do
+			echo -e "$(get $this.text)";
+		done
+		'
 )
+
 
 #TODO include fun, to load classes from diferent file in sane format
 
@@ -45,6 +52,7 @@ rof instance.display
 rof instance.print $string
 rof instance.print "Hola"
 rof instance.n_times_repeat 5 "tohle je argument"
+rof instance.repeat
 rof instance.fun
 
 echo -e "\nDelete:"

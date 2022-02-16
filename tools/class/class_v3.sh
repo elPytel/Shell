@@ -13,7 +13,7 @@ indir_val() {
 function get () { # ( instance.atribut )
 	declare -n object=$(echo $1 | cut -d "." -f 1)
     local atribut=$(echo $1 | cut -d "." -f 2)
-	echo ${object["$atribut"]}
+	echo -e "${object["$atribut"]}"
 }
 
 # set atribut
