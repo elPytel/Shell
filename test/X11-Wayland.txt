@@ -1,0 +1,4 @@
+sudo nano /etc/gdm3/custom.conf Look for the line
+
+#WaylandEnable=false
+and remove the leading # sign.

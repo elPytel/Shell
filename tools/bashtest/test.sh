@@ -39,23 +39,29 @@ function print_function_and_error_line () { # ( file function errno )
 	code=$(sed -n ${start},${end}p $file)
 	faigled_line=$(echo -e "$code" | grep -n "return $errno" | cut -d ":" -f1)
 
-	echo -e "==== FAILURE ====\n"
+	echo -e "${Red}=== FAILURE ===${NC}\n"
 	echo "$code" | sed 's/^/\t/' | sed "${faigled_line}s/^/>/" 
 	
-	echo -e "\nERROR in: $file on line: $(( $start + $faigled_line - 1 ))."
+	echo -e "\n${Red}ERROR${NC} in: ${Blue}$file${NC} on line: $(( $start + $faigled_line - 1 ))."
 }
 
 function test_function () { # ( file function )
 	local file=$1
 	local function=$2
+	local output
 
-	output=$(run_function $function)
-	errno=$?
+	output=$(run_function $function); errno=$?
 	
-	$VERBOSE && echo -e "$output"
-
 	if [ $errno -ne 0 ]; then
 		print_function_and_error_line $file $function $errno
+	fi
+	
+	if $VERBOSE; then
+		echo -e "\nFunction output:"
+		echo -e "$output"
+	fi
+
+	if [ $errno -ne 0 ]; then
 		return 1
 	fi
 	return 0
@@ -75,12 +81,13 @@ function test_file () { # ( file )
 	source $file
 
 	local progres=""
-	local pass="."
-	local fail="F"
+	local pass="${Green}.${NC}"
+	local fail="${Red}F${NC}"
 
 	$DEBUG && echo -e "All func: $functions"
 	for function in $functions; do
-		$DEBUG && echo -e "Function: $function"
+		$DEBUG && echo -e "\nFunction: ${Blue}$function${NC}"
+
 		test_function $file $function
 		ret=$?
 		if [ $ret -eq 0 ]; then
@@ -106,6 +113,9 @@ function test_file () { # ( file )
 
 # kdyz funkce chybuje, tak vypisuji do konzole jeji kod
 # zvyrazneni radku, ktery navraci danou chybovou hodnotu
+
+# colors
+source ../colors.sh
 
 passed=0
 faigled=0
@@ -135,11 +145,13 @@ if [ -z $files ]; then
 	files=$(ls $pwd | tr " " "\n" | grep ".sh" | grep "test_")
 fi
 
-echo -e "=== test session starts ==="
-echo -e "rootdir: $(pwd)"
+number=$(echo $files | tr " " "\n" | wc -l)
+echo -e "${Green}=== test session starts ===${NC}"
+echo -e "rootdir: ${Blue}$(pwd)${NC}"
+echo -e "collected: ${Blue}$number${NC} files"
 
 for file in $files; do
-	echo -e "File: $file"
+	echo -e "File: ${Blue}$file${NC}"
 	# do file exist?
 	if [ ! -f $file ]; then
 		$VERBOSE && echo "ERROR: $file do not exist!"
@@ -148,7 +160,7 @@ for file in $files; do
 	test_file $file
 done
 
-echo -e "=== $passed passed, $faigled failed ==="
+echo -e "=== ${Green}$passed passed${NC}, ${Red}$faigled failed${NC} ==="
 
 $VERBOSE && echo -e "Done"
 exit 0

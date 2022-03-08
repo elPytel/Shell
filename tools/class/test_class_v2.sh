@@ -1,14 +1,14 @@
 #!/bin/bash
 # By Pytel
 
-source ./class_v2.sh
+source ./class.sh
 
 DEBUG=true
 #DEBUG=false
 
 declare -A myClass 
 
-myClass=( ["text"]="Ahoj!" ["print"]="echo " )
+myClass=( ["text"]="Ahoj!" ["print"]='echo $@' )
 string=$(get myClass.text)
 
 declare -A instance
