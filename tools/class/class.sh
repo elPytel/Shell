@@ -38,7 +38,7 @@ function rof () { # ( instance.func atributs ... )
 	local this=$(echo $1 | cut -d "." -f1)
 	local fun=$(echo $1 | cut -d "." -f2 ); shift
 	local code=$(get $this.$fun)
-	$DEBUG && echo -e "Code: \n$code"
+	#$DEBUG && echo -e "Code: \n$code"
 	eval $code 
 }
 

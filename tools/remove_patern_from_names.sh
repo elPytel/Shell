@@ -28,7 +28,7 @@ function setFolder () { # ( folder )
 
 	# do folder exist?
 	if [ ! -d $folder ]; then
-		$VERBOSE && echo "ERROR: $folder do not exist!" 1>&2
+		$VERBOSE && echo "${RED}ERROR: ${Blue}$folder${NC} do not exist!" 1>&2
 		return 2
 	fi
 	return 0
@@ -67,7 +67,7 @@ for file in $folder/*; do
 
 		# rename
 		mv "$file" "$folder/$newName"
-		$VERBOSE && echo "File $fileName renamed to: $newName"
+		$VERBOSE && echo "File ${Blue}$fileName${NC} renamed to: ${Blue}$newName${NC}"
 	fi
 done
 
