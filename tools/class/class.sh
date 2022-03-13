@@ -62,6 +62,7 @@ function new () { # ( object = class )
 	local args=$(echo $@ | tr -d " " )
 	local object=$(echo $args | cut -d "=" -f 1)
 	local class=$(echo $args | cut -d "=" -f 2)
+	declare -gA $object
 	copy $object $class
 }
 
