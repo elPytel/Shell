@@ -18,11 +18,10 @@ function get () { # ( instance.atribut )
 
 # set atribut
 function sat () { # ( instance.atribut = "value" )
-	local args=$(echo $@ | tr -d " ")
-	declare -n object=$(echo $args | cut -d "." -f 1) 
-	local atribut=$(echo $args | cut -d "." -f 2 | cut -d "=" -f 1)
-	local arg=$(echo $args | cut -d "." -f 2 | cut -d "=" -f 2)
-	object["$atribut"]="$arg"
+	declare -n object=$(echo $1 | cut -d "." -f 1) 
+	local atribut=$(echo $1 | cut -d "." -f 2)
+	shift; if [ "$1" == "=" ]; then shift; fi
+	object["$atribut"]="$1"
 }
 
 # run function
