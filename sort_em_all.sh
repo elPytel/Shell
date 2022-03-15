@@ -61,11 +61,11 @@ for record in $records; do
 
 	# do folders exist?
 	if [ ! -d $fromFolder ]; then
-		$VERBOSE && echo "${Red}ERROR: ${Blue}$fromFolder${NC} do not exist!" 1>&2
+		$VERBOSE && echo -e "${Red}ERROR: ${Blue}$fromFolder${NC} do not exist!" 1>&2
 		exit 1
 	fi
 	if [ ! -d $toFolder ]; then
-		$VERBOSE && echo "${Red}ERROR: ${Blue}$toFolder${NC} do not exist!" 1>&2
+		$VERBOSE && echo -e "${Red}ERROR: ${Blue}$toFolder${NC} do not exist!" 1>&2
 		exit 1
 	fi
 
@@ -88,7 +88,7 @@ for record in $records; do
 		
 		if [ $(echo "$matchExtensions" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
 			mv "$file" "$toFolder"
-			$VERBOSE && echo "File: ${Blue}$fileName${NC}, from: ${Blue}$fromFolder${NC}, moved to: ${Blue}$toFolder${NC}"
+			$VERBOSE && echo -e "File: ${Blue}$fileName${NC}, from: ${Blue}$fromFolder${NC}, moved to: ${Blue}$toFolder${NC}"
 		fi
 	done
 
