@@ -11,7 +11,7 @@ function printHelp () {
 	echo -e "USE:"
 	echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND"
 	echo ""
-	echo -e "COMMANDS:"
+	echo -e "OPTIONS:"
 	echo -e "  -h, --help \t print this text"
 	echo -e "  -d, --debug\t enable debug output"
 	echo -e "  -v, --verbose\t increase verbosity"
