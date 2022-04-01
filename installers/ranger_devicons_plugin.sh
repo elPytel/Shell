@@ -3,8 +3,8 @@
 # Skript pro instalaci:
 # plugin ikony pro ranger
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 

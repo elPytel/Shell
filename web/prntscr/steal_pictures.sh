@@ -7,8 +7,8 @@ DEBUG=true
 function setStart () { #( index )
 	if [ $# -ne 1 ]; then
 		echo "ERROR: ${NC}invalid args: [$*]" 1>&2
-                return 1
-        fi
+    	return 1
+    fi
 	local index=$1
 	if [ ${#index} -ne 6 ]; then
 		echo "ERROR: ${NC}invalid len [$index]" 1>&2	

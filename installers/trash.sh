@@ -3,8 +3,8 @@
 # Skript pro instalaci:
 # trash-cli - ovladani kose z prikazove radky
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
@@ -14,13 +14,8 @@ path="/home/$user"        	# cesta k /home/user
 source $path/Shell/tools/colors.sh
 
 # nainstaluje
-echo -e "${Green}Installing trash: ${NC}"
-if apt install trash-cli -y; then 
-	echo "Done"
-else
-	echo -e "${Red}ERROR!${NC}"
-	exit 1
-fi
+app="trash-cli"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"

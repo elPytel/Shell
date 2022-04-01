@@ -31,7 +31,7 @@ function setVendor () { #( vendor )
 	local _vendor="$1"
 	if [ $(echo "$(listVendors)" | grep $_vendor -c) -ne 1 ]; then
 		echo -e "${RED}ERROR: ${NC}unknown interface!" 1>&2
-                return 2
+        return 2
 	fi
 	vendor=$_vendor
 	return 0
@@ -47,7 +47,7 @@ function setFile () { #( file )
 }
 
 function setInterface () { #( interface )
-        # not one argument
+    # not one argument
 	if [ $# -ne 1 ]; then
 		$VERBOSE && echo -e "ERROR: ${NC}interface not specified!"
 		return 1
@@ -64,7 +64,7 @@ function setInterface () { #( interface )
 		return 3
 	fi
 	$DEBUG && echo -e "Interface set: $interface"
-        return 0
+    return 0
 }
 
 function setMAC () { #( MAC ) 
@@ -116,7 +116,7 @@ while [ $# -gt 0 ] ; do
 		-f | --file)	shift; setFile $1 || exit 4;;
 		-V | --vendor)	shift; setVendor $1 || exit 5;; 
 		-i | --interface) shift; setInterface $1 || exit 6;;
-		-m | --MAC)	shift; setMAC $1 || exit 7;;
+		-m | --MAC)		shift; setMAC $1 || exit 7;;
 		-R | --random)	random=true;;
 		*) echo -e "Unknown parametr: $arg"; exit 1;;
 	esac
@@ -136,8 +136,8 @@ fi
 
 # invalid interface
 if [ -z "$interface" ] || [ $(echo "$interfaces" | grep "$interface" -c) -ne 1 ]; then
-        echo -e "${RED}ERROR: ${NC}invalid interface!" 1>&2
-        exit 3
+    echo -e "${RED}ERROR: ${NC}invalid interface!" 1>&2
+    exit 3
 fi
 
 # prepare MAC
