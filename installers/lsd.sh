@@ -3,6 +3,9 @@
 # Skript pro instalaci:
 # LSDeluxe - The next gen ls command
 
+#DEBUG=true
+DEBUG=false
+
 # colors
 RED='\033[0;31m'
 NC='\033[0m'    # No Color
@@ -12,25 +15,34 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 # find user name
 user=$(. $BASEDIR/get_curent_user.sh)
 if [ $? != 0 ]; then
-        [ $DEBUG ] && echo $user
+    $DEBUG && echo $user
 	echo -e "${RED}Unable to parse user!${NC}"
-        exit 2
+    exit 2
 fi
 
 path="/home/$user"               # cesta k /home/user
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
-verzion=0.19.0
+# gain root
+if [ $(whoami) != "root" ]
+then
+    echo -e "${Red}I nead root privileges!${NC}"
+    exec sudo "$0" "$@" # znovu zpusti sam sebe ale s pravy roota
+    echo "Error: failed to execute sudo" >&2
+    exit 3
+fi
+
+verzion=0.21.0
 file=lsd_"$verzion"_amd64.deb
 
 # stahne dany soubor
 if [ -f $file ]	# existuje jiz dany soubor?
 then
-        echo -e "${Green}Already downloaded!${NC}"
+    echo -e "${Green}Already downloaded!${NC}"
 else
-        echo -e "${Green}Downloading: ${Blue}LSD${NC}"
+    echo -e "${Green}Downloading: ${Blue}LSD${NC}"
 	curl -L -O https://github.com/Peltoche/lsd/releases/download/$verzion/$file
 fi
 
@@ -38,7 +50,7 @@ echo -en "${Green}Install LSDeluxe: ${NC}"
 if [ ! $(dpkg -i $file) ]
 then
 	echo -e "${Red}Are you root?${NC}"
-        exit 1
+    exit 1
 fi
 echo "Done"
 #snap install lsd --classic     # stara nefunkci verze
@@ -71,5 +83,5 @@ EOF
 
 echo "Done"
 
-exit
+exit 0
 #END

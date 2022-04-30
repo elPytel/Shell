@@ -3,8 +3,8 @@
 # Skript pro instalaci:
 # tty-clock - aplikace pro zobrazovani casu v terminalu
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
@@ -14,13 +14,8 @@ path="/home/$user"        	# cesta k /home/user
 source $path/Shell/tools/colors.sh
 
 # instalace
-echo -e "${Green}Installing tty-clock: ${NC}"
-if apt install tty-clock -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR!${NC}"
-        exit 1
-fi
+app="tty-clock"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"

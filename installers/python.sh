@@ -9,28 +9,15 @@ DEBUG="false"
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
 path="/home/$user"              # cesta k /home/user
-app="Python3"
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 # instalace
-echo -e "${Green}Installing ${Blue}$app: ${NC}"
-if apt install python3 -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
-        exit 1
-fi
-
-app="Python3-pip"
-echo -e "${Green}Installing ${Blue}$app: ${NC}"
-if apt install python3-pip -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
-        exit 1
-fi
+apps="python3 python3-pip"
+for app in $apps; do
+	$path/Shell/tools/install_app.sh $app || exit $?
+done
 
 # aktulizace
 python3 -m pip install --upgrade pip
@@ -52,9 +39,5 @@ fi #.local/bin
 EOF
 
 echo "Done"
-
-
-echo "Done"
-
 exit 0
 #END

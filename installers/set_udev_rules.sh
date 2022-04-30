@@ -14,7 +14,7 @@ source ../tools/colors.sh
 # find user name
 user=$(. ../tools/get_curent_user.sh)
 if [ $? != 0 ]; then
-        [ $DEBUG ] && echo $user
+    $DEBUG && echo $user
 	echo -e "${Red}Error${NC}: Unable to parse user!" >&2
         exit 2
 fi

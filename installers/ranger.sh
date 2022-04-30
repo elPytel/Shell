@@ -43,9 +43,8 @@ then
 fi
 
 # instalace
-echo -e "${GREEN}Installing ranger: ${NC}"
-apt install ranger -y
-echo "Done"
+app="ranger"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # konfigurace
 echo -e "${GREEN}Ranger config files: ${NC}"

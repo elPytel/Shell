@@ -11,7 +11,7 @@ patern="y2mate.com - "
 eval folder="~/Stažené"
 
 function printHelp () {
-	echo -e "COMMANDS:"
+	echo -e "OPTIONS:"
 	echo -e "  -h, --help \t\t print this text"
 	echo -e "  -d, --debug\t\t enable debug output"
 	echo -e "  -v, --verbose\t\t increase verbosity"
@@ -22,6 +22,14 @@ function printHelp () {
 function setFolder () { # ( folder ) 
 	eval folder="$1"
 }
+
+BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+user=$(. "$BASEDIR"/tools/get_curent_user.sh)
+path="/home/$user/Shell"        # cesta ke scriptum
+$DEBUG && echo "path: $BASEDIR"
+
+# colors
+source "$BASEDIR"/tools/colors.sh
 
 # parse input
 $DEBUG && echo "Args: [$@]"
@@ -46,7 +54,7 @@ done
 
 # do folder exist?
 if [ ! -d $folder ]; then
-	$VERBOSE && echo "ERROR: $folder do not exist!"
+	$VERBOSE && echo -e "${Red}ERROR: ${Blue}$folder${NC} do not exist!"
 	exit 1
 fi
 
@@ -63,7 +71,7 @@ for file in $folder/*; do
 
 		# rename
 		mv "$file" "$folder/$newName"
-		$VERBOSE && echo "File $fileName renamed to: $newName"
+		$VERBOSE && echo -e "File ${Blue}$fileName${NC} renamed to: ${Blue}$newName${NC}"
 	fi
 done
 

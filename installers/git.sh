@@ -3,8 +3,8 @@
 # Skript pro instalaci:
 # git - verzovaci system pro spravu softwaru
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 user=$(. $BASEDIR/get_curent_user.sh)
@@ -16,16 +16,11 @@ if $DEBUG; then
 fi
 
 # colors
-source $path/Shell/colors.sh
+source $path/Shell/tools/colors.sh
 
 # instalace gitu
-echo -e "${Green}Installing git: ${NC}"
-if apt install git -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR!${NC}"
-        exit 1
-fi
+app="git"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"

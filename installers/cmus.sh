@@ -4,8 +4,12 @@
 # cmus - a small, fast and powerful console music player for Unix-like operating systems.
 # https://cmus.github.io/#home
 
-sudo apt install cmus
+DEBUG=false
 
+source ../tools/colors.sh
 
-exit 0
+app=cmus
+../tools/install_app.sh $app
+
+exit $?
 #END

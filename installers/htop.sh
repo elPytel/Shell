@@ -15,9 +15,9 @@ BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
 # find user name
 user=$(. $BASEDIR/get_curent_user.sh)
 if [ $? != 0 ]; then
-	[ $DEBUG ] && echo $user
-        echo -e "${RED}Unable to parse user!${NC}"
-        exit 2
+	$DEBUG && echo $user
+    echo -e "${RED}Unable to parse user!${NC}"
+    exit 2
 fi
 path="/home/$user"              # cesta k /home/user
 
@@ -25,14 +25,8 @@ path="/home/$user"              # cesta k /home/user
 source $path/Shell/tools/colors.sh
 
 # instalace
-app="wordgrinder"
-echo -e "${Green}Installing ${Blue}$app: ${NC}"
-if apt install htop -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
-        exit 1
-fi
+app="htop"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # konfigurace
 echo -en "${Green}Setting up configuration: ${NC}"

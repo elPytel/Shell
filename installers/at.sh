@@ -29,7 +29,7 @@ app="at"
 # instalace
 echo -e "${Green}Installing ${Blue}$app: ${NC}"
 if apt install $app -y; then
-        systemctl enable --now atd
+    systemctl enable --now atd
 	echo "Done"
 else
         echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"

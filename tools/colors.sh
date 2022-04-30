@@ -76,6 +76,6 @@ On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
-[ "$DEBUG" == "true" ] && echo -e "${BRed}C${BGreen}o${BYellow}l${BBlue}o${BPurple}r${BCyan}s${NC} ${IRed}l${IGreen}o${IYellow}a${IBlue}d${IPurple}e${ICyan}d${IWhite}!${NC}"
+$DEBUG && echo -e "${BRed}C${BGreen}o${BYellow}l${BBlue}o${BPurple}r${BCyan}s${NC} ${IRed}l${IGreen}o${IYellow}a${IBlue}d${IPurple}e${ICyan}d${IWhite}!${NC}"
 
 #END
