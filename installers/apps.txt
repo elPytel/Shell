@@ -10,7 +10,10 @@ p7zip-full
 neofetch
 curl
 lm-sensors
+
+# gnome extensons
 chrome-gnome-shell
+gnome-shell-extension-manager
 
 # open dokument to txt
 odt2txt
@@ -23,8 +26,11 @@ grsync
 
 ## Some more:
 
-#ubuntu-restricted-extras
+ubuntu-restricted-extras
 # Media Codecs
+
+gufw
+# grafical setting for firewal
 
 #preload
 # Cache frequently used apps in RAM
