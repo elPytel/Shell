@@ -88,7 +88,7 @@ for record in $records; do
 		
 		if [ $(echo "$matchExtensions" | tr " " "\n"  | grep "$extension" -c) -ge 1 ]; then
 			mv "$file" "$toFolder"
-			$VERBOSE && echo -e "File: ${Blue}$fileName${NC}, from: ${Blue}$fromFolder${NC}, moved to: ${Blue}$toFolder${NC}"
+			$VERBOSE && echo -e "File: ${Blue}$fileName${NC} \nfrom: ${Blue}$fromFolder${NC}, moved to: ${Blue}$toFolder${NC}"
 		fi
 	done
 
