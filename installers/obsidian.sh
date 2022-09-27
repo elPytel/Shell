@@ -15,8 +15,6 @@ if [[ -z "$dl_url" ]]; then
     exit 2
 fi
 
-sudo apt install libfuse2
-
 curl --location --output Obsidian.AppImage "$dl_url"
 curl --location --output obsidian.png "$icon_url"
 

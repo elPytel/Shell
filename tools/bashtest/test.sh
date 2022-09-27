@@ -150,8 +150,6 @@ echo -e "${Green}=== test session starts ===${NC}"
 echo -e "rootdir: ${Blue}$(pwd)${NC}"
 echo -e "collected: ${Blue}$number${NC} files"
 
-exit_status=0
-
 for file in $files; do
 	echo -e "File: ${Blue}$file${NC}"
 	# do file exist?
@@ -164,9 +162,6 @@ done
 
 echo -e "=== ${Green}$passed passed${NC}, ${Red}$faigled failed${NC} ==="
 
-if [ $faigled -gt 0 ]; then
-	exit_status=1
-fi
 $VERBOSE && echo -e "Done"
-exit $exit_status
+exit 0
 #END
