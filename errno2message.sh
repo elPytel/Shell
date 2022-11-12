@@ -71,4 +71,5 @@ case $FORMAT in
 esac
 
 $VERBOSE && echo "Done"
+exit 0
 # END

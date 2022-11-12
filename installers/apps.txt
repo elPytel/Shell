@@ -9,6 +9,7 @@ aptitude
 p7zip-full
 neofetch
 curl
+entr
 lm-sensors
 chrome-gnome-shell
 

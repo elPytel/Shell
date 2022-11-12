@@ -28,7 +28,7 @@ function printHelp () {
     echo -e "  -t --test \t run docker Hello World!"
 }
 
-# Installing dependencies
+# Installing apps
 function installApps () { # ( class_name [app, ...] )
     local class_name="$1"
     shift
@@ -44,21 +44,30 @@ function installApps () { # ( class_name [app, ...] )
     done
 }
 
-# installation
+# installation from digitalocean tutorial
 function install () { #(  )
     installApps "dependencies" $dependencies
 
-    # install docker
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    # Add Docker’s official GPG key
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor \ 
+        -o /usr/share/keyrings/docker-archive-keyring.gpg
+    
+    # Use the following command to set up the repository:
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \ 
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    sudo apt update
     $VERBOSE && echo $(apt-cache policy docker-ce)
 
+    # install docker
     $path/Shell/tools/install_app.sh docker-ce
     $VERBOSE && echo $(sudo systemctl status docker)
 
     # install docker compose
     mkdir -p ~/.docker/cli-plugins/
-    curl -SL $download_link_compose -o ~/.docker/cli-plugins/docker-compose
+    curl -SL $download_link_compose \
+        -o ~/.docker/cli-plugins/docker-compose
     chmod +x ~/.docker/cli-plugins/docker-compose
     $VERBOSE && echo $(docker compose version)
 
@@ -71,23 +80,39 @@ function install () { #(  )
     echo "Now idealy restart your pc (or relog-in)."
 }
 
-function installDesktop () { # (  )
+# Install using the repository
+function installFromRepository () {
     installApps "dependencies" $dependencies
 
     # Add Docker’s official GPG key
     sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor \
+        -o /etc/apt/keyrings/docker.gpg
 
     # Use the following command to set up the repository:
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
         $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     
+    # install docker cli apps
     packages="docker-ce docker-ce-cli containerd.io docker-compose-plugin"
     installApps "docker packages" $packages
+}
 
+# Install using the convenience script
+function installUsingConvenienceScript () {    
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
+}
+
+function installDesktop () { # (  )
+    # download docker desktop
+    file_name="docker-desktop.deb"
+    curl -sSL $download_link_docker_desktop \
+        --output "$file_name"
+
+    # install docker desktop from file
+    sudo apt-get install ./$file_name
 }
 
 function uninstall () { #(  )
@@ -117,6 +142,9 @@ function testDocker () { #(  )
     docker run hello-world
 }
 
+# TODO
+# Link will get old !!!
+download_link_docker_desktop="https://desktop.docker.com/linux/main/amd64/docker-desktop-4.13.1-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64"
 download_link_compose="https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-linux-x86_64"
 
 dependencies="apt-transport-https curl ca-certificates software-properties-common gnupg lsb-release"
