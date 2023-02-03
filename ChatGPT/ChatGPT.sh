@@ -27,35 +27,42 @@ function printHelp() {
 
 # Function to send a request to the API and receive the response
 function send_request() { # ( api_key, prompt )
-    local ENDPOINT="https://api.openai.com/v1/engines/chat-davinci/jobs"
+    local ENDPOINT="https://api.openai.com/v1/completions"
     local API_KEY=$1
     local text=$2
 
     # If prompt is not provided, ask the user for input
     if [ -z "$text" ]; then
         # Prompt the user for input
-        read -p "You: " text
+        read -p "You: \n" text
     fi
     
     # Prepare the request data
     data=$(cat <<EOF
     {
+        "model": "text-davinci-003",
         "prompt": "$text",
-        "max_tokens": 100,
+        "max_tokens": 512,
         "temperature": 0.5,
         "top_p": 1
     }
 EOF
 )
-    
-    # Send the API request and get the response
-    response=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_KEY" -d "$data" "$ENDPOINT")
+    $DEBUG && echo -e "Data: \n$data"
 
+    # Send the API request and get the response
+    response=$(curl "$ENDPOINT"\
+        -X POST \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $API_KEY" \
+        -d "$data" 2>/dev/null)
+    
     # Extract the response text from the JSON response
-    response_text=$(echo "$response" | jq '.choices[0].text' | tr -d '"')
+    $DEBUG && echo -e "Response: \n$response"
+    response_text=$(echo "$response" | jq '.choices[0].text' | tr -d '"' | sed 's/^\\n//')
 
     # Print the response text
-    echo "ChatGPT: $response_text"
+    echo -e "ChatGPT: $response_text"
 }
 
 function chat() {
@@ -66,14 +73,18 @@ function chat() {
     # Continuously prompt the user for input
     while true; do
         # Prompt the user for input
-        read -p "You: " text
+        echo -e "You: "
+        read text
+
+        echo ""
 
         # Exit if the user types 'exit'
         if [ "$text" == "exit" ]; then
             exit 0
         fi
 
-        send_request $API_KEY $text
+        send_request $API_KEY "$text"
+        echo ""
     done
 
     echo "Exiting..."
@@ -89,7 +100,7 @@ function question() { # ( question )
         read -p "Question: " question
     fi
 
-    send_request $API_KEY $question
+    send_request $API_KEY "$question"
 
     echo "Exiting..."
     exit 0
@@ -99,11 +110,14 @@ function question() { # ( question )
 DEPENDENCIES=$(cat dependencies.txt)
 for dep in $DEPENDENCIES; do
     if ! [ -x "$(command -v $dep)" ]; then
-        echo -e "${RED}Error: $BLUE$dep$NC is not installed." >&2
-        echo -e "${GREEN}Install it with:$NC sudo apt install $BLUE$dep$NC" >&2
+        echo -e "${RED}Error:${NC} lib is not installed: $BLUE${dep}$NC" >&2
+        echo -e "${GREEN}Install it with:$NC sudo apt install $dep" >&2
         exit 4
     fi
 done
+
+
+
 
 # load API key from file
 API_KEY=$(cat API_KEY.conf)
@@ -126,8 +140,8 @@ while [ $# -gt 0 ] ; do
 		-d | --debug) 	DEBUG=true;;
 		-v | --verbose) VERBOSE=true;;
         -c | --chat) 	chat; exit 0;;
-        -q | --question) shift; question $1; exit 0;;
-		*) send_request $API_KEY $arg; exit 0;;
+        -q | --question) shift; question "$1"; exit 0;;
+		*) send_request $API_KEY "$arg"; exit 0;;
 	esac
 
 	# next arg
