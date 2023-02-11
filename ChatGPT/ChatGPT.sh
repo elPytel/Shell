@@ -8,6 +8,8 @@
 
 DEBUG=false
 VERBOSE=false
+TTS=false
+LANGUAGE="cs"
 
 # colors
 RED='\033[0;31m'
@@ -23,6 +25,10 @@ function printHelp() {
     echo -e "-h, --help       Print this help message."
     echo -e "-c, --chat       Continuously prompt the user for input."
     echo -e "-q, --question   Ask a question."
+    echo -e "-t, --tts        Use text to speech."
+    echo -e "-l, --language   Set language for text to speech."
+    echo -e "-d, --debug      Print debug messages."
+    echo -e "-v, --verbose    Print verbose messages."
 }
 
 # Function to send a request to the API and receive the response
@@ -63,6 +69,11 @@ EOF
 
     # Print the response text
     echo -e "ChatGPT: $response_text"
+
+    # Text to speech
+    if $TTS; then
+        tts $LANGUAGE "$(echo -e $response_text | tr '\n' ' ' )"
+    fi
 }
 
 function chat() {
@@ -106,6 +117,12 @@ function question() { # ( question )
     exit 0
 }
 
+function tts() { # ( lang text )
+    local lang=$1
+    local text=$2
+    espeak-ng -v $lang "$text"
+}
+
 # check list of dependencies
 DEPENDENCIES=$(cat dependencies.txt)
 for dep in $DEPENDENCIES; do
@@ -115,9 +132,6 @@ for dep in $DEPENDENCIES; do
         exit 4
     fi
 done
-
-
-
 
 # load API key from file
 API_KEY=$(cat API_KEY.conf)
@@ -139,6 +153,8 @@ while [ $# -gt 0 ] ; do
 		-h | --help) 	printHelp; exit 2;;
 		-d | --debug) 	DEBUG=true;;
 		-v | --verbose) VERBOSE=true;;
+        -t | --tts) 	TTS=true;;
+        -l | --language) shift; LANGUAGE=$1;;
         -c | --chat) 	chat; exit 0;;
         -q | --question) shift; question "$1"; exit 0;;
 		*) send_request $API_KEY "$arg"; exit 0;;
