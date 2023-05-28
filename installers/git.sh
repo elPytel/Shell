@@ -22,6 +22,9 @@ source $path/Shell/tools/colors.sh
 app="git"
 $path/Shell/tools/install_app.sh $app || exit $?
 
+app="gh"
+$path/Shell/tools/install_app.sh $app || exit $?
+
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"
 [ ! -f $path/.bash_aliases ] && touch $path/.bash_aliases
@@ -50,16 +53,15 @@ git config --global user.email $email
 git config --global user.name $name
 git config --global init.defaultBranch main	# nove inicializovane repozitare zacinaji ve vetvi main
 
-# vygenerovani Tokenu
-echo -e "${Red}Make your own git token instead of password!${NC}"
-echo "https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token"
-echo -en "${Green}Press Enter${NC}"
-read
-
 # nastavi ukladani hesla
 git config --global credential.helper store
 # git config credential.helper cache <timeout> # timeout v sec.
 
+# propojeni s githubem
+echo -en ${Green}Loging to github${NC}
+gh auth login
+
+echo -e "${Green}Git config done${NC}"
 exit 0
 #END
 
