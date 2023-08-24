@@ -15,6 +15,7 @@ function printHelp () {
 	echo -e "  -d --disconnect \t to disconnect from vpn"
 	echo -e "  -s --state \t\t state of vpn connection"
 	echo -e "  -g --gui \t\t run the gui for vpn"	
+	echo -e "  -h --help \t\t print this help"
 }
 
 function setProfile () { #( arg profile )
@@ -73,6 +74,7 @@ function connect () {
 	printf "$line" | $vpn_tool -s connect "$host"
 }
 
+page="https://vpn.tul.cz/"
 vpn_tool="/opt/cisco/anyconnect/bin/vpn"
 vpn_gui="/opt/cisco/anyconnect/bin/vpnui"
 path=$(dirname "$0")         # adresa k tomuto skriptu
@@ -88,10 +90,10 @@ len=$(wc -l "$path"/$config | cut -d" " -f1)      # conf file len
 # top -bn 1 | grep vpnagentd
 
 # mam nainstalovany vpn klient?
-if [ ! -e $vpn_tool ]
-then
-        echo -e "${Red}ERROR: cisco anyconnect not found!${NC}"
-        exit 1
+if [ ! -e $vpn_tool ]; then
+	echo -e "${Red}ERROR: cisco anyconnect not found!${NC}"
+	echo -e "Download it from: ${Blue}$page${NC}"
+	exit 1
 fi
 
 # zadal validni argumenty?
@@ -105,6 +107,9 @@ esac
 $DEBUG && echo "vpns: $PROFILES"
 
 case $arg in
+	"-h" | "--help")
+		printHelp; exit 2
+	;;
 	"-c" | "--connect")
 		# pripoji se pres vpn 
 		connect
@@ -127,6 +132,6 @@ case $arg in
         ;;
 esac
 
-
-exit
+$DEBUG && echo "Done."
+exit 0
 #END
