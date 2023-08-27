@@ -25,15 +25,9 @@ path="/home/$user/"
 # colors
 source $path/Shell/tools/colors.sh
 
-app="bat"
 # instalace
-echo -e "${Green}Installing ${Blue}$app: ${NC}"
-if apt install $app -y; then
-        echo "Done"
-else
-        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
-        exit 1
-fi
+app="bat"
+$path/Shell/tools/install_app.sh $app || exit $?
 
 # nastavi aliasy
 echo -en "${Green}Setting aliases: ${NC}"

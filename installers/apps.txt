@@ -1,11 +1,10 @@
 # Apps for installation
 # Pytel
 
-terminator
+tmux
 vlc
 gimp
 gparted
-aptitude
 p7zip-full
 neofetch
 curl
