@@ -44,6 +44,7 @@ fi
 
 # instalace
 app="ranger"
+path="/home/$user"
 $path/Shell/tools/install_app.sh $app || exit $?
 
 # konfigurace
