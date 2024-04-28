@@ -20,6 +20,7 @@ if [ $? != 0 ]; then
         exit 2
 fi
 
+path="/home/$user"        	# cesta k /home/user
 config="/home/$user/.config/ranger"
 
 if [ $# -gt 0 ]

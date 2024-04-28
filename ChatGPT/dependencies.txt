@@ -1,1 +1,1 @@
-jq curl
+jq curl espeak-ng
