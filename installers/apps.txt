@@ -8,7 +8,10 @@ gparted
 p7zip-full
 neofetch
 curl
+cron
 entr
+cmatrix
+
 lm-sensors
 chrome-gnome-shell
 

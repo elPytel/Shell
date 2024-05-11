@@ -10,8 +10,8 @@
 
 #mail -s "Test Subject" <email>@gmail.com < /dev/null
 
-#DEBUG="true"
-DEBUG="false"
+#DEBUG=true
+DEBUG=false
 
 path=$(dirname "$0")         # adresa k tomuto skriptu
 
