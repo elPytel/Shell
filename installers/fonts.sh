@@ -12,14 +12,15 @@ NC='\033[0m' 	# No Color
 # dostupne z: https://www.nerdfonts.com/font-downloads
 font_type=nerdfont
 font_name=UbuntuMono
-archiv=.zip
+archiv=".zip"
+version="3.1.1"
 # stahne dany soubor
 if [ $(ls | grep "$name$archiv" | wc -l) -eq 1 ]
 then
 	echo -e "${GREEN}Already downloaded!${NC}"
 else
 	echo -e "${GREEN}Downloading: ${BLUE}$font_name${NC}"
-	curl -L -O https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$font_name$archiv
+	curl -L -O https://github.com/ryanoasis/nerd-fonts/releases/download/$version/$font_name$archiv
 fi
 
 # rozbali archiv do adekvatni slozky
@@ -36,11 +37,11 @@ fi
 
 if [ ! -d $folder/$font_type/$font_name ]
 then
-        echo -e "${GREEN}Folder: ${BLUE}$font_name ${GREEN}doesnt exist, creating new one.${NC}"
+	echo -e "${GREEN}Folder: ${BLUE}$font_name ${GREEN}doesnt exist, creating new one.${NC}"
 	if ! mkdir $folder/$font_type/$font_name
         then
-                echo -e "${RED}Are you root?${NC}"
-                exit 1
+			echo -e "${RED}Are you root?${NC}"
+			exit 1
         fi
 fi
 
