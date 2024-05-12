@@ -1,0 +1,18 @@
+# By Pytel
+
+function printError () { # ( error_message )
+	echo -e "${Red}ERROR: ${NC}$1" 1>&2
+}
+
+function printWarning () { # ( warning_message )
+	echo -e "${Yellow}WARNING: ${NC}$1" 1>&2
+}
+
+function printErrorAndExit () { # ( error_message exit_code )
+	printError "$1"
+	exit $2
+}
+
+function printPassword () { # ( password )
+	echo $1 | sed -e 's/./\*/g'
+}

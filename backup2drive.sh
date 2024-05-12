@@ -132,7 +132,7 @@ cat "$path/$config" | grep -v "#" | grep "$VendorID:$ProductID" | while read -r 
 		echo "Destination: $destinationDir"
 		echo "Option: $options"
 	fi
-	
+		
 	# test dirs
 	valid=true
 	if [ "$(echo -n "$sourceDir" | tail -c 1)" != "*" ]; then
