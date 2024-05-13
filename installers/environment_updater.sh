@@ -31,7 +31,7 @@ sed -i '/Shell/d' $path/.bash_environment
 # nastavi novou PATH pro Shell
 cat >> $path/.bash_environment <<EOF
 
-# set PATH so it includes user's private Shell sripts if it exists
+# set PATH to includes user's private Shell sripts if it exists
 if [ -d "\$HOME/Shell" ] ; then
 	PATH="\$HOME/Shell:\$PATH"
 fi #Shell

@@ -1,7 +1,7 @@
 # By Pytel
 
 # funkce pro rozhodovani potvrzeni a zamitnuti
-function yes_no () { #( strign )
+function yes_no () { #( strign ) -> 0/1/2
 	# !1 argiment
 	if [ $# -ne 1 ]; then
         	return 2
