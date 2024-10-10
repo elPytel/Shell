@@ -25,7 +25,7 @@ fi
 # colors
 source $path/Shell/tools/colors.sh
 
-apps="aircrack-ng"
+apps="tpad"
 
 # zadal validni argumenty?
 case $# in
@@ -33,6 +33,7 @@ case $# in
 	1) file=$1;;
 	*) echo -e "${Red}Invalid options: $@${NC}"; exit 1;;
 esac
+
 
 # existuje soubor?
 if [ ! -f $file ]; then
@@ -53,16 +54,7 @@ then
 fi
 
 for app in $apps; do
-	# what is status of this package?
-	dpkg -s $app &>/dev/null
-	ret="$?"
-	$DEBUG && echo -e "ret: $ret"
-	if [ $ret -eq 0 ]; then
-		$VERBOSE && echo -e "App: ${Blue}$app${NC} is installed!"
-	else
-		$VERBOSE && echo -e "App: ${Blue}$app${NC} is not installed! \n instaling..."
-		sudo apt install $app -y
-	fi
+    sudo snap install $app
 done
 
 $VERBOSE && echo -e "Done"
