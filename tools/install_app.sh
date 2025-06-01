@@ -26,20 +26,45 @@ then
     exit 2
 fi
 
-# what is status of this package?
-dpkg -s $app &>/dev/null
-ret="$?"
-$DEBUG && echo -e "ret: $ret"
-if [ $ret -eq 0 ]; then
-	$VERBOSE && echo -e "App: ${Blue}$app${NC} is installed!"
+function apt_intall () { # app
+    local app="$1"
+    if ! dpkg -s "$app" &>/dev/null; then
+        echo "Installing $app..."
+        if apt install "$app" -y; then
+            echo "Done"
+        else
+            echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
+            exit 3
+        fi
+    else
+        echo "App: ${Blue}$app${NC} is already installed!"
+    fi
+}
+
+function apk_install () { # app
+    local app="$1"
+    if ! apk info "$app" &>/dev/null; then
+        echo "Installing $app..."
+        if apk add "$app"; then
+            echo "Done"
+        else
+            echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
+            exit 4
+        fi
+    else
+        echo "App: ${Blue}$app${NC} is already installed!"
+    fi
+}
+
+# Check if the package manager is apt or apk
+if command -v apt &>/dev/null; then
+	apt_intall "$app"
+elif command -v apk &>/dev/null; then
+	apk_install "$app"
 else
-	$VERBOSE && echo -e "App: ${Blue}$app${NC} is not installed! \n instaling..."
-	if apt install $app -y; then
-		echo "Done"
-	else
-        echo -e "${Red}ERROR: failed to install ${Blue}$app${NC}!"
-        exit 3
-	fi
+	echo -e "${Red}ERROR: No supported package manager found!${NC}"
+	exit 5
 fi
+
 exit 0
 # END
