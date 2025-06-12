@@ -1,6 +1,6 @@
 #!/bin/bash
 # By Pytel
-# instalace
+# install app using apt or apk
 
 DEBUG=false
 
@@ -26,7 +26,7 @@ then
     exit 2
 fi
 
-function apt_intall () { # app
+function apt_intall () { # ( app )
     local app="$1"
     if ! dpkg -s "$app" &>/dev/null; then
         echo "Installing $app..."
@@ -41,7 +41,7 @@ function apt_intall () { # app
     fi
 }
 
-function apk_install () { # app
+function apk_install () { # ( app )
     local app="$1"
     if ! apk info "$app" &>/dev/null; then
         echo "Installing $app..."
