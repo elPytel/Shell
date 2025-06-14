@@ -8,6 +8,10 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'    # No Color
 
+python_dependencies="pip-dependencies.txt"
+apt_dependencies="apt-dependencies.txt"
+snap_dependencies="snap-dependencies.txt"
+
 if [ $(whoami) != "root" ]
 then
 	echo -e "${RED}I need root privileges!${NC}"
@@ -20,13 +24,13 @@ fi
 . ../updater.sh -y
 
 # dalsi
-./check_and_install_packages.sh apps.txt
+./check_and_install_packages.sh $apt_dependencies
 
 # instalace snap
 apt install snapd -y
 
 # instalace tpadu
-snap install tpad 
+./install_snap_packages.sh $snap_dependencies
 
 # grub customizer
 add-apt-repository ppa:danielrichter2007/grub-customizer

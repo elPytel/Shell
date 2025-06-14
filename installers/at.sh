@@ -21,6 +21,9 @@ source $path/Shell/tools/colors.sh
 app="at"
 $path/Shell/tools/install_app.sh $app || exit $?
 
+# enable service
+systemctl enable --now atd
+
 echo "Done"
 exit 0
 #END

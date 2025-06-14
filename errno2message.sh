@@ -1,5 +1,7 @@
 #!/bin/bash
 # By Pytel
+
+# Description:
 # Error code to message
 
 #DEBUG=true

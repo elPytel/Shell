@@ -125,6 +125,32 @@ printf "%.25s...\n" "dataURI: DFASDFKAJELKJDFSADFMLAKFJLSKDJFAJSDFL"
 echo "${yourvar:0:25}..."
 ```
 
+## Konfigurační soubory
+
+Standarní přípony pro konfigurační soubory jsou:
+- `.cfg`,
+- `.conf`.
+
+Soubor `config.conf`:
+```Bash
+myvar=Hello World
+```
+
+Soubor `config.conf.defaults`:
+```Bash
+myvar=Default Value
+othervar=Another Variable
+```
+
+Výhoda rozdělení konfiguračních souborů na dva je, že v případě že se nějaká hodnota změní, tak jí není nutné přepsat v původním souboru a ztratit tak východzí hodnotu, ale pouze se změní v `config.conf`.
+
+Pro načítání těchto hodnot lze použít script:
+- `lib/config.shlib`
+```Bash
+function config.get() { # ( config_file atribute defoutl_value )
+```
+
+- [zdroj](https://unix.stackexchange.com/questions/175648/use-config-file-for-my-shell-script)
 ## Časování
 
 Uspání procesu na určitý čas umožnuje příkaz `sleep <sec>`, očekává argument počet vteřin, na jak dlouho se má uspat. Zvládne vyhodnotit i desetiny sekund `sleep 0.1` nebo `sleep 1.0e-1`.

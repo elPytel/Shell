@@ -1,0 +1,48 @@
+# By Pytel
+
+# Description:
+#   Functions for reading configuration files
+
+# Function for reading a single attribute from a config file
+function config.read_file() { # ( config_file atribute ) -> value
+    (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+}
+
+# Function for reading a single attribute from a config file
+# If the attribute is not found in the config file, the default config file is searched.
+# If the attribute is not found in the default config file, the default value is returned.
+function config.get() { # ( config_file atribute defoutl_value ) -> value
+	if [ -z "${1}" ]; then
+		echo "config.get: Missing config file argument" >&2;
+		return 1;
+	elif [ ! -f "${1}" ]; then
+		echo "config.get: Config file '${1}' not found" >&2;
+		return 2;
+	fi
+	
+	if [ -z "${2}" ]; then
+		echo "config.get: Missing attribute argument" >&2;
+		return 1;
+	fi
+
+	# try to read the value from the config file
+	local val="$(config.read_file "${1}" "${2}")";
+    if [ "${val}" = "__UNDEFINED__" ]; then
+		# does default file exist?
+		if [ ! -f "${1}".defaults ]; then
+			echo "config.get: Attribute '${2}' not found in config file '${1}'" >&2;
+			return 3;
+		fi
+		# try to read the value from the default config file
+		val="$(config.read_file "${1}".defaults "${2}")";
+		if [ "${val}" = "__UNDEFINED__" ]; then
+			echo "config.get: Attribute '${2}' not found in config file '${1}' or its defaults" >&2;
+			# is there a default value?
+			if [ -z "${3}" ]; then
+				return 4;
+			fi
+			val="${3}";
+		fi
+    fi
+    printf -- "%s" "${val}";
+}

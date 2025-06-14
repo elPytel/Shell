@@ -1,9 +1,9 @@
 
-string.sh
--remove spaces
+`string.sh`
+- remove spaces
 
-files.sh
-isFile
-areFiles
-isDir
-isPicture
+`files.sh`
+- isFile
+- areFiles
+- isDir
+- isPicture

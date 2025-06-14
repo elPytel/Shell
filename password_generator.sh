@@ -17,7 +17,9 @@ function printHelp () {
 	echo -e "  -h --help \t print this text"
 	echo -e "  -d --debug\t enable debug output"
 	echo -e "  -v --verbose\t enable vebrose mode"
+	echo -e "  -c --check\t check genrated passwords"
 	echo -e "  -l --len\t set len of password: <>"
+	echo -e "  -t --test \t test this password: <>"
 	echo -e "  -n --number\t set number of repetition: <>"
 	echo -e "  -m --mode\t set specific mod: <>"
 	echo -e " \t * a small chars"
@@ -81,6 +83,34 @@ function setMode () { #( mode )
 	return 0
 }
 
+# Returns number of occurences of password in database.
+function pwnedCheck() { #( password )
+	local pwd="$1"
+	local hash
+	hash=$(echo -n "$pwd" | sha1sum | cut -c -40)
+	local expected=${hash#?????}
+	local prefix=${hash%$expected}
+	local match
+
+	match="$(curl -s "https://api.pwnedpasswords.com/range/${prefix}" | grep -i "^$expected:")" || return 1 
+	echo "${match#*:}" | tr -d '\r'
+}
+
+# Test password and print number of occurences.
+function testPassword() { #( password )
+	local password="$1"
+	local occurences=$(pwnedCheck "$password")
+	if $VERBOSE ; then
+		if [[ -z "$occurences" ]]; then
+			echo "The password '$password' has no occurences."
+		else
+			echo "The password '$password' has $occurences occurences."
+		fi
+	else
+		echo "$password $occurences"
+	fi
+}
+
 len=12
 repetition=1
 mode="a-zA-Z0-9"
@@ -101,7 +131,9 @@ while [ $# -gt 0 ] ; do
 		-v | --verbose)	VERBOSE=true;;
 		-m | --mode)	shift; setMode "$1" || exit 3;;
 		-l | --len)	shift; setLen "$1" || exit 4;;
-		-n | --number)	shift; setNumber "$1" || exit 5;
+		-n | --number)	shift; setNumber "$1" || exit 5;;
+		-t | --test)	shift; testPassword "$1"; exit 0;;
+		-c | --check)	PWNEDCHECK=true;
 	esac
 
 	# next arg
@@ -121,7 +153,16 @@ if [ -z $mode ]; then
 	exit 6
 fi
 
-cat /dev/urandom | tr -dc $mode | fold -w $len | head -n $repetition
+if [ $PWNEDCHECK ]; then
+	passwords=$(cat /dev/urandom | tr -dc $mode | fold -w $len | head -n $repetition)
+
+	for password in $passwords; do
+		testPassword "$password"
+	done
+else
+	cat /dev/urandom | tr -dc $mode | fold -w $len | head -n $repetition
+fi
+
 
 $VERBOSE && echo "Done"
 exit 0 

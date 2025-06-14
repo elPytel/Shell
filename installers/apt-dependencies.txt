@@ -1,14 +1,17 @@
 # Apps for installation
 # Pytel
 
-terminator
+tmux
 vlc
 gimp
 gparted
 p7zip-full
 neofetch
 curl
+cron
 entr
+cmatrix
+
 lm-sensors
 chrome-gnome-shell
 
@@ -16,6 +19,7 @@ chrome-gnome-shell
 odt2txt
 
 # package manager
+nala
 aptitude
 
 # grafical rsync

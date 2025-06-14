@@ -20,6 +20,7 @@ if [ $? != 0 ]; then
         exit 2
 fi
 
+path="/home/$user"        	# cesta k /home/user
 config="/home/$user/.config/ranger"
 
 if [ $# -gt 0 ]
@@ -44,6 +45,7 @@ fi
 
 # instalace
 app="ranger"
+path="/home/$user"
 $path/Shell/tools/install_app.sh $app || exit $?
 
 # konfigurace

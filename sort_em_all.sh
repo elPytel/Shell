@@ -9,7 +9,7 @@ VERBOSE=false
 
 function printHelp () {
 	echo -e "USE:"
-	echo -e "  $(echo $-2 | tr "/" "\n" | tail -n 1) COMMAND"
+	echo -e "  $(echo "$0" | tr "/" "\n" | tail -n 1) COMMAND"
 	echo ""
 	echo -e "OPTIONS:"
 	echo -e "  -h, --help \t print this text"

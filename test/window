@@ -1,1 +1,2 @@
 xmessage Left click to continue -button okay
+xmessage "Left click to continue" -button "okay"
