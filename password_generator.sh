@@ -110,7 +110,7 @@ while [ $# -gt 0 ] ; do
 done
 
 if $DEBUG ; then 
-	echo "Lenght: $len"
+	echo "Length: $len"
 	echo "Number: $repetition"
 	echo "Mode: $mode"
 fi

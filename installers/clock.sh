@@ -6,9 +6,9 @@
 #DEBUG=true
 DEBUG=false
 
-BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
+BASEDIR=$(dirname "$0")
 user=$(. $BASEDIR/get_curent_user.sh)
-path="/home/$user"        	# cesta k /home/user
+path="/home/$user"
 
 # colors
 source $path/Shell/tools/colors.sh

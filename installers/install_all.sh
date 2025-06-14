@@ -10,7 +10,7 @@ NC='\033[0m'    # No Color
 
 if [ $(whoami) != "root" ]
 then
-	echo -e "${RED}I nead root privileges!${NC}"
+	echo -e "${RED}I need root privileges!${NC}"
 	exec sudo "$0" "$@"		# znovu zpusti sam sebe ale s pravy roota
 	echo "Error: failed to execute sudo" >&2
 	exit 1
