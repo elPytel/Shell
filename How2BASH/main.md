@@ -162,7 +162,7 @@ Použití:
 `usleep 1000` uspí proces na 1ms.
 
 ## Výchozí textový editor
-Umožnuje vybrat defoultní textový editor v systému (Vi, Vim, Nano,...), spouští příkaz: `$ select-editor`.
+Umožnuje vybrat defaultní textový editor v systému (Vi, Vim, Nano,...), spouští příkaz: `$ select-editor`.
 
 ## Cron
 Cron je terminálová aplikace umožnující časování jednotlivých scriptů, co kdy a jak se má provést. Umožnuje výběr přesné minuty, hodiny, dny v měsíci, měsíce v roce, případně i dne v týdnu a příkazuči sekvence příkazů, které se v ten okamžik mají provést.

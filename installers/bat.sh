@@ -11,16 +11,8 @@ RED='\033[0;31m'
 NC='\033[0m'    # No Color
 
 BASEDIR=$(dirname "$0")         # adresa k tomuto skriptu
-
-# find user name
-user=$(. $BASEDIR/../tools/get_curent_user.sh)
-if [ $? != 0 ]; then
-	$DEBUG &&  echo $user
-	echo -e "${RED}Unable to parse user!${NC}"
-	exit 2
-fi
-
-path="/home/$user/"
+user=$(. $BASEDIR/get_curent_user.sh)
+path="/home/$user"        	# cesta k /home/user
 
 # colors
 source $path/Shell/tools/colors.sh

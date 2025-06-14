@@ -11,7 +11,8 @@ Předpokládaná cesta k tomuto repozitáři je v home, tedy: */home/user/Shell/
 * [tady](/DOC/main.md)
 
 
-## instalers
+## installers
+
 Složka installers obsahuje skripty s automatickou instalací aplikací a jejich následnou konfigurací.
 
 ### Instalce Bash scriptů
